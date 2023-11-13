@@ -1,5 +1,5 @@
 {
-  "name": "bloggerapi",
+  "name": "inkwellapi",
   "version": "1.0.0",
   "description": "\"Api for a blog application\"",
   "main": "index.js",
