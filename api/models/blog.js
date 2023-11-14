@@ -1,5 +1,6 @@
 const mongoose  = require("mongoose");
 const { Schema, model } = mongoose;
+const mongoosePaginate = require("mongoose-paginate");
 
 const blogSchema = new Schema({
   title: {
@@ -12,7 +13,7 @@ const blogSchema = new Schema({
     required: true,
   },
   author: {
-    type: Schema.Types.String,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   }, 
@@ -33,19 +34,23 @@ const blogSchema = new Schema({
     type: [String],
     default: [],
   }, 
-  body: {
+  content: {
     type: String,
     required: true,
   },
   timeStamp: {
-    type: Date,
-    default: Date.now,
-  },
-  publishedAt: {
-    type: Date,
-    default: Date.now,
+    createdAt : {
+      type: Date,
+      default: Date.now
+    }, 
+    publishedAt : {
+      type: Date,
+      default: Date.now
+    }
   }
 })
+
+blogSchema.plugin(mongoosePaginate)
 
 blogSchema.set("toJSON", {
   transform: (document, returnedObject) => {
@@ -55,6 +60,6 @@ blogSchema.set("toJSON", {
   },
 })
 
-Blog = model("Blog", blogSchema);
+const Blog = model("Blog", blogSchema);
 
 module.exports = Blog

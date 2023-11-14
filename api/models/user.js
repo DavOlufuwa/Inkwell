@@ -27,7 +27,13 @@ const userSchema = new Schema({
   role:{
     type: Number,
     default: 2107,
-  }
+  },
+  blogs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Blog",
+    }
+  ]
 });
 
 userSchema.set("toJSON", {
