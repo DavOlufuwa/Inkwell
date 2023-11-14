@@ -25,6 +25,10 @@ const blogSchema = new Schema({
     type: Number,
     default: 0,
   },
+  readingtime: {
+    type: Number,
+    default: 0,
+  },
   tags: {
     type: [String],
     default: [],

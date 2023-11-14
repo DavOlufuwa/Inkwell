@@ -23,6 +23,10 @@ const userSchema = new Schema({
   },
   refreshToken: {
     type: String,
+  },
+  role:{
+    type: Number,
+    default: 2107,
   }
 });
 
