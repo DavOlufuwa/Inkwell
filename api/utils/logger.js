@@ -1,14 +1,16 @@
-const winston = require("winston");
-const morgan = require("morgan");
+const info = (...params) => {
+  if (process.env.NODE_ENV !== "test") {
+    console.log(...params);
+  }
+};
 
-morgan.token("req[body]", (req, res) => {
-  return req.body 
-});
+const error = (...params) => {
+  if (process.env.NODE_ENV !== "test") {
+    console.error(...params);
+  }
+};
 
-const winstonLogger = winston.createLogger({
-  level: "verbose",
-  format: winston.format.json(),
-  transports: [new winston.transports.Console()],
-});
-
-
+module.exports = {
+  info,
+  error,
+};
