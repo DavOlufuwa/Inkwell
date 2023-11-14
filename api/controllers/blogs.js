@@ -2,7 +2,7 @@ const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const { userExtractor } = require("../utils/middleware");
-const cheerio = require("cheerio");
+
 
 // Get all blogs
 blogRouter.get("/", async (request, response) => {
@@ -145,3 +145,6 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
 
   response.status(204).end()
 })
+
+
+module.exports = blogRouter

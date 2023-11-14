@@ -15,6 +15,9 @@ const userRouter = require("./controllers/users");
 const loginRouter = require("./controllers/authenticator");
 const {MONGODB_URI} = require("./utils/config");
 const logger = require("./utils/logger");
+const blogRouter = require("./controllers/blogs");
+const logoutRouter = require("./controllers/logout");
+const refreshRouter = require("./controllers/refresh");
 
 const app = express();
 
@@ -35,6 +38,9 @@ app.use(requestLogger);
 app.use(accessTokenExtractor);
 app.use('/api/users', userRouter)
 app.use('api/login', loginRouter)
+app.use('api/blogs', blogRouter)
+app.use('api/logout', logoutRouter)
+app.use('api/refresh', refreshRouter)
 app.use(unknownEndpoint)
 app.use(errorHandler)
 

@@ -1,6 +1,5 @@
 const mongoose  = require("mongoose");
 const { Schema, model } = mongoose;
-const mongoosePaginate = require("mongoose-paginate");
 
 const blogSchema = new Schema({
   title: {
@@ -49,8 +48,6 @@ const blogSchema = new Schema({
     }
   }
 })
-
-blogSchema.plugin(mongoosePaginate)
 
 blogSchema.set("toJSON", {
   transform: (document, returnedObject) => {

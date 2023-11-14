@@ -81,45 +81,6 @@ const refreshTokenExtractor = async (request, response, next) => {
   next();
 };
 
-const paginatedResults = (model) => {
-  return async (request, response, next) => {
-    const allResults = {};
-
-    const pageNumber = Number(request.query.page);
-    const limit = Number(request.query.limit || 20);
-
-    const startIndex = (pageNumber - 1) * limit;
-    const endIndex = pageNumber * limit;
-
-    const allBlogs = await model.find({}).populate("user", {
-      _id: 1,
-      firstName: 1,
-      lastName: 1,
-    }).limit(limit).skip(startIndex);
-
-    if (endIndex < allBlogs.length) {
-      allResults.next = {
-        page: pageNumber + 1,
-        limit: limit,
-      };
-    }
-
-    if (startIndex > 0) {
-      allResults.previous = {
-        page: pageNumber - 1,
-        limit: limit,
-      };
-    }
-
-    allResults.paginatedResults = allBlogs;
-
-    response.json(allResults);
-
-    next();
-  };
-
-};
-
 module.exports = {
   requestLogger,
   unknownEndpoint,
@@ -127,5 +88,4 @@ module.exports = {
   accessTokenExtractor,
   userExtractor,
   refreshTokenExtractor,
-  paginatedResults
 };
