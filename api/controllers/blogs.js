@@ -1,4 +1,5 @@
 const blogRouter = require("express").Router();
+const { default: mongoose } = require("mongoose");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const { userExtractor } = require("../utils/middleware");
@@ -66,6 +67,10 @@ blogRouter.get("/", async (request, response) => {
 
 // Creating a new blog
 blogRouter.post("/", userExtractor, async (request, response) => {
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  
   const user = request.user;
   const body = request.body;
 
@@ -81,16 +86,19 @@ blogRouter.post("/", userExtractor, async (request, response) => {
     tags: body.tags,
     author: user.id,
     content: body.content,
-    readingtime: readTime(),
+    readingTime: readTime(),
   });
 
-  const savedBlog = await blog.save();
+  const savedBlog = await blog.save({session});
 
   user.blogs = user.blogs.concat(savedBlog.id);
 
-  await user.save();
+  await user.save({session});
 
+  await session.commitTransaction()
+  session.endSession()
   response.status(201).json(savedBlog);
+
 });
 
 //Updating a blog post
@@ -109,7 +117,7 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
 
   const update = {}
 
-  const fields = ["title", "description", "readingtime" ,"tags", "content", "state"];
+  const fields = ["title", "description", "readingTime" ,"tags", "content", "state"];
 
   fields.forEach(field => {
     if (body[field]) {
@@ -128,7 +136,7 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
 
   const updatedBlog = await Blog.findByIdAndUpdate(blogId, update, { new: true });
 
-  response.status(204).json(updatedBlog);
+  response.status(200).json(updatedBlog);
 })
 
 

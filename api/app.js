@@ -37,10 +37,10 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(accessTokenExtractor);
 app.use('/api/users', userRouter)
-app.use('api/login', loginRouter)
-app.use('api/blogs', blogRouter)
-app.use('api/logout', logoutRouter)
-app.use('api/refresh', refreshRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/blogs', blogRouter)
+app.use('/api/logout', logoutRouter)
+app.use('/api/refresh', refreshRouter)
 app.use(unknownEndpoint)
 app.use(errorHandler)
 

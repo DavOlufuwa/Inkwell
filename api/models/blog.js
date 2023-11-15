@@ -25,7 +25,7 @@ const blogSchema = new Schema({
     type: Number,
     default: 0,
   },
-  readingtime: {
+  readingTime: {
     type: Number,
     default: 0,
   },
