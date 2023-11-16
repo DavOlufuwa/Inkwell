@@ -1,7 +1,6 @@
 const blogRouter = require("express").Router();
 const { default: mongoose } = require("mongoose");
 const Blog = require("../models/blog");
-const User = require("../models/user");
 const { userExtractor } = require("../utils/middleware");
 
 

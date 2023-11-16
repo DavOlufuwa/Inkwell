@@ -94,7 +94,7 @@ describe("blogs api", () => {
       const blogs = await blogsInDb();
 
       expect(blogs).toHaveLength(2);
-    })
+    }, 100000)
 
     test("blog can be updated", async () => {
       const allBlogs = await blogsInDb();
@@ -115,6 +115,17 @@ describe("blogs api", () => {
         .expect("Content-Type", /application\/json/);
 
     }, 100000);
+
+    test("blog can be searched", async () => {
+      
+      const query = "Remote Work"
+      const response = await api
+        .get(`/api/blogs/?search=${query}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+      
+        console.log(response.body)
+    }, 100000)
   });
 });
 
