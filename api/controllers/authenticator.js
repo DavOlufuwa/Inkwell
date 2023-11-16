@@ -35,7 +35,7 @@ loginRouter.post("/", async (request, response) => {
   .status(200)
   .cookie("jwt", refreshToken, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
   })

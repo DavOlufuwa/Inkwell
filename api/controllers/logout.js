@@ -14,6 +14,7 @@ logoutRouter.get("/", refreshTokenExtractor,async (request, response) => {
   response.status(204)
   .clearCookie("jwt", {
     httpOnly: true,
+    secure: true,
     sameSite: "none",
     secure: false
   })
