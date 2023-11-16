@@ -85,22 +85,34 @@ describe("blogs api", () => {
       expect(allBlogs[0].title).toEqual(initialBlogs[0].title);
     }, 100000);
 
-    test("blog can be edited", async () => {
+    test("blog can be deleted", async () => {
       const allBlogs = await blogsInDb();
-      const formerBlog = allBlogs[0]
+      const formerBlog = allBlogs[0];
 
-      const edition = {
-        title: "Doing what you like",
-        state: "drafts"
-      };
-      const response = await api.put(`/api/blogs/${formerBlog.id}`)
-      .set("Authorization", authHeader)
-      .send(edition)
-      
-      const result = response.body
-      console.log(result)
-      expect(result.state).toBe("drafts")
-      expect(result.title).toBe("Doing what you like")
+      await api.delete(`/api/blogs/${formerBlog.id}`).set("Authorization", authHeader);
+
+      const blogs = await blogsInDb();
+
+      expect(blogs).toHaveLength(2);
+    })
+
+    test("blog can be updated", async () => {
+      const allBlogs = await blogsInDb();
+
+      const formerBlog = allBlogs[0];
+
+      const updatedBlog = {
+        ...initialBlogs[0],
+        title: "updated title",
+        state: "published"
+      }
+
+      await api
+        .put(`/api/blogs/${formerBlog.id}`)
+        .set("Authorization", authHeader)
+        .send(updatedBlog)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
 
     }, 100000);
   });

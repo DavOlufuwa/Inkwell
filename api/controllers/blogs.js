@@ -32,7 +32,7 @@ blogRouter.get("/", async (request, response) => {
   const startIndex = (pageNumber - 1) * pageSize;
 
 
-  const allBlogs = await Blog.find({...searchQuery}).populate("user", {
+  const allBlogs = await Blog.find({...searchQuery}).populate("author", {
     _id: 1,
     firstName: 1,
     lastName: 1,
@@ -63,6 +63,16 @@ blogRouter.get("/", async (request, response) => {
 
   response.status(200).json(results);
 });
+
+
+blogRouter.get("/:id", async (request, response) => {
+  const blog = await Blog.findById(request.params.id).populate("author", {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+  });
+  response.json(blog);
+})
 
 
 // Creating a new blog
@@ -112,8 +122,10 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
   const body = request.body;
 
   const blog = await Blog.findById(blogId);
+  console.log(blog);
+
   const blogContent = blog.content.match(/\w+/g).length;
-  const bodyContent = body.content.match(/\w+/g).length;
+  const bodyContent = body.content?.match(/\w+/g).length;
 
   const update = {}
 
@@ -126,7 +138,7 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
   });
 
   if(blogContent !== bodyContent) {
-    update.readingtime = Math.ceil(bodyContent / 200);
+    update.readingTime = Math.ceil(bodyContent / 200);
   }
 
  if (body.state === "published") {
