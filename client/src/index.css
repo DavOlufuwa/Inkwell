@@ -12,4 +12,8 @@
   body {
     @apply m-0 p-0 box-border;
   }
+
+  .nav-link{
+    @apply bg-none text-t-light dark:text-t-dark font-medium duration-200 text-lg hover:text-d-light
+  }
 }
