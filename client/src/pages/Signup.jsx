@@ -1,7 +1,30 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate , useLocation } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { signupUser } from "../routes/authRequests";
 
-const LoginPage = () => {
+const Signup = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const newUserMutation = useMutation({
+    mutationFn: signupUser,
+    onSuccess: () => {
+      window.alert("new user created");
+      setCredentials({
+        email: "",
+        firstname: "",
+        lastname: "",
+        password: "",
+      });
+      navigate(from, { replace: true });
+    },
+    onError: () => {
+      window.alert("error creating new user");
+    },
+  });
+  
   const [credentials, setCredentials] = useState({
     email: "",
     firstname: "",
@@ -13,6 +36,11 @@ const LoginPage = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    newUserMutation.mutate(credentials);
+  };
+
   return (
     <div className="min-h-[100svh]">
       <div>
@@ -20,7 +48,7 @@ const LoginPage = () => {
       </div>
       <section>
         <div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email">Email</label>
               <input
@@ -33,22 +61,22 @@ const LoginPage = () => {
               />
             </div>
             <div>
-              <label htmlFor="firstname">First Name</label>
+              <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
-                name="firstname"
-                id="firstname"
+                name="firstName"
+                id="firstName"
                 placeholder="John"
                 onChange={handleChange}
                 required
               />
             </div>
             <div>
-              <label htmlFor="lastname">Last Name</label>
+              <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
-                name="lastname"
-                id="lastname"
+                name="lastName"
+                id="lastName"
                 placeholder="Doe"
                 onChange={handleChange}
                 required
@@ -65,17 +93,16 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" className="border">
+              Create an account
+            </button>
           </form>
         </div>
         <div>
           <div className="mt-10 text-sm text-center">
             Already have an account ?{" "}
-            <Link
-              to="/login"
-              className="underline font-semibold"
-            >
-             Login here
+            <Link to="/login" className="underline font-semibold">
+              Login here
             </Link>
           </div>
         </div>
@@ -84,4 +111,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Signup;

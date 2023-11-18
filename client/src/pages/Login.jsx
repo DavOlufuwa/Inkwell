@@ -2,23 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-
+  
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
-  })
+  });
 
   const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value })
-  }
-
-
-
-
-
-
-
-
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
 
   return (
     <div className="min-h-[100svh]">

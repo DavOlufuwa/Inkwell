@@ -47,16 +47,16 @@ const Navigation = () => {
       >
         <ul className=" bg-inherit w-full flex flex-col gap-8 md:flex-row md:items-center md:gap-[3vw]">
           <li>
-            <NavLink to="garage" className="nav-link" onClick={closeMenu}>
+            <NavLink to="login" className="nav-link" onClick={closeMenu}>
               Log in
             </NavLink>
           </li>
           <li className="relative">
-            <NavLink to="cart" className="nav-link" onClick={closeMenu}>
+            <NavLink to="signup" className="nav-link" onClick={closeMenu}>
               Sign up
             </NavLink>
           </li>
-          <li className="nav-link">
+          <li className="boom">
             <NavLink
               to="scheduledrive"
               className="nav-link"
