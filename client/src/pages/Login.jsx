@@ -1,16 +1,37 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "../routes/authRequests";
 
 const Login = () => {
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
 
+  const loginMutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: () => {
+      setCredentials({
+        email: "",
+        password: "",
+      })
+      navigate(from, { replace: true });
+    }
+  })
+
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginMutation.mutate(credentials);
+  }
 
   return (
     <div className="min-h-[100svh]">
@@ -19,7 +40,7 @@ const Login = () => {
       </div>
       <section>
         <div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="username">Username</label>
               <input

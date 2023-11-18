@@ -8,10 +8,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
+import useTheme from "../hooks/useTheme";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const {darkMode, setDarkMode} = useTheme()
   const body = document.querySelector("body");
   const html = document.querySelector("html");
 
