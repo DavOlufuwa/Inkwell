@@ -69,7 +69,7 @@ const Navigation = () => {
             <input
               type="text"
               placeholder="Search Blogs"
-              className="min-w-full dark:bg-c-light dark:text-t-dark border border-d-light focus-visible:border-d-light active:border-d-light outline-none py-3 pl-2 pr-14 rounded-md lg:w-72 "
+              className="min-w-full dark:bg-bg-light dark:text-t-light border border-d-light focus-visible:border-d-light active:border-d-light outline-none py-3 pl-2 pr-14 rounded-md lg:w-72 "
             />
             <FontAwesomeIcon
               icon={faSearch}
@@ -90,13 +90,13 @@ const Navigation = () => {
               style={{
                 color: darkMode ? "white" : "black",
               }}
-              className="text-xl border border-t-dark rounded-full p-[6px]"
+              className="text-xl border border-t-dark rounded-full p-[6px] hover:bg-d-light"
             />
           ) : (
             <FontAwesomeIcon
               icon={faMoon}
               style={{ color: darkMode ? "white" : "black" }}
-              className="text-2xl border border-t-light rounded-full px-[6px] py-[3px]"
+              className="text-2xl border border-t-light rounded-full px-[6px] py-[3px] hover:bg-d-dark"
             />
           )}
         </button>
