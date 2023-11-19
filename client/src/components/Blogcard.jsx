@@ -9,7 +9,7 @@ const Blogcard = () => {
           <img src={ImageOne} alt="" className="w-full" />
           <div className="flex gap-4 absolute top-3 left-2 max-w-full flex-wrap">
             <div
-              className="bg-[rgba(196,195,195,0.02)] backdrop-blur-sm text-xs text-white px-2 py-2 rounded-lg max-w-max"
+              className="select-none bg-[rgba(196,195,195,0.02)] backdrop-blur-sm text-xs text-white px-2 py-2 rounded-lg max-w-max"
               role="badge"
             >
               design

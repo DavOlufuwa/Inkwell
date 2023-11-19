@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div>
       <section className="border border-x-0 border-y-t-light dark:border-y-t-dark my-3 md:mb-10">
-        <h1 className="dark:text-t-dark text-7xl sm:text-[8rem] md:text-[7rem] 2xl:text-[15rem] font-bold flex justify-between py-2 md:py-1">
+        <h1 className="select-none dark:text-t-dark text-7xl sm:text-[8rem] 2xl:text-[15rem] font-bold flex justify-between py-2 md:py-1">
           <span>I</span>
           <span>N</span>
           <span>K</span>
@@ -17,7 +17,7 @@ const Home = () => {
         </h1>
       </section>
       <section className="mb-5">
-        <p className="sm:text-xl font-semibold dark:text-t-dark">
+        <p className="select-none sm:text-xl font-semibold dark:text-t-dark">
           Recent Blog Posts
         </p>
       </section>

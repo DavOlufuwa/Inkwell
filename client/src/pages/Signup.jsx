@@ -42,11 +42,11 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-[90svh] ">
-      <div>
-        <h2>Create your inkwell profile</h2>
+    <div className="min-h-[90svh] flex flex-col">
+      <div className="text-t-light dark:text-t-dark text-center text-xl my-12">
+        <h2>Create your <span className="font-black uppercase">Inkwell</span> profile</h2>
       </div>
-      <section className="mx-auto">
+      <section className="sm:grid sm:place-content-center">
         <div>
           <form onSubmit={handleSubmit} className="form-case">
             <div className="form-group">
@@ -97,15 +97,15 @@ const Signup = () => {
                 required
               />
             </div>
-            <button type="submit" className="border">
+            <button type="submit" className="btn">
               Create an account
             </button>
           </form>
         </div>
         <div>
-          <div className="mt-10 text-sm text-center">
+          <div className="mt-10  text-center text-t-light dark:text-t-dark">
             Already have an account ?{" "}
-            <Link to="/login" className="underline font-semibold">
+            <Link to="/login" className="underline font-bold tracking-wide text-d-dark hover:text-d-light">
               Login here
             </Link>
           </div>

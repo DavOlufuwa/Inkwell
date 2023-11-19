@@ -42,11 +42,11 @@ const Navigation = () => {
         </Link>
       </div>
       <div
-        className={` bg-bg-light dark:bg-bg-dark duration-300 absolute min-h-screen left-0 top-[-100%] w-full flex items-center px-8 md:px-5 lg:static lg:min-h-max lg:w-auto z-40 ${
+        className={`duration-300 absolute min-h-screen left-0 top-[-100%] w-full flex items-center px-8 md:px-5 lg:static lg:min-h-max lg:w-auto z-40 ${
           menuOpen && "top-[0%]"
         }`}
       >
-        <ul className=" bg-inherit w-full flex flex-col gap-8 md:flex-row md:items-center md:gap-[3vw]">
+        <ul className="bg-transparent w-full flex flex-col gap-8 md:flex-row md:items-center md:gap-[3vw]">
           <li>
             <NavLink to="login" className="nav-link" onClick={closeMenu}>
               Log in
@@ -65,7 +65,7 @@ const Navigation = () => {
             >
               Log Out
             </NavLink>
-          </li>
+          </li> 
           <li className="relative">
             <input
               type="text"
