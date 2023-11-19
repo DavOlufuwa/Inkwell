@@ -1,8 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../routes/authRequests";
 import useAuth from "../hooks/useAuth";
+import { enqueueSnackbar } from "notistack";
 
 const Login = () => {
   const { auth, setAuth } = useAuth();
@@ -18,7 +20,12 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (newUser) => {
-      window.alert("login successful");
+      enqueueSnackbar(`Welcome back, ${newUser.fullName}!`, {
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        }
+      });
       setCredentials({
         email: "",
         password: "",
@@ -35,7 +42,7 @@ const Login = () => {
       navigate(from, { replace: true });
     },
     onError: () => {
-      window.alert("error logging in");
+      enqueueSnackbar("Error logging in, please try again");
       setCredentials({
         email: "",
         password: "",
@@ -64,10 +71,11 @@ const Login = () => {
         <div>
           <form onSubmit={handleSubmit} className="form-case">
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Email Address</label>
               <input
                 type="email"
                 name="email"
+                autoComplete="off"
                 id="email"
                 placeholder="johndoe@gmail.com"
                 required
@@ -81,6 +89,7 @@ const Login = () => {
                 type="password"
                 name="password"
                 id="password"
+                autoComplete="off"
                 placeholder="password"
                 onChange={handleChange}
                 className="form-control"

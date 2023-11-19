@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { signupUser } from "../routes/authRequests";
+import { enqueueSnackbar } from "notistack";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -11,7 +12,12 @@ const Signup = () => {
   const newUserMutation = useMutation({
     mutationFn: signupUser,
     onSuccess: () => {
-      window.alert("new user created");
+      enqueueSnackbar("New account created successfully", {
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
       setCredentials({
         email: "",
         firstname: "",
@@ -21,7 +27,13 @@ const Signup = () => {
       navigate(from, { replace: true });
     },
     onError: () => {
-      window.alert("error creating new user");
+      enqueueSnackbar("Something went wrong while creating your account" ,);
+      setCredentials({
+        email: "",
+        firstname: "",
+        lastname: "",
+        password: "",
+      });
     },
   });
 
@@ -53,11 +65,12 @@ const Signup = () => {
         <div>
           <form onSubmit={handleSubmit} className="form-case">
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email Address</label>
               <input
                 type="email"
                 name="email"
                 id="email"
+                autoComplete="off"
                 placeholder="johndoe@gmail.com"
                 onChange={handleChange}
                 className="form-control"
@@ -70,6 +83,7 @@ const Signup = () => {
                 type="text"
                 name="firstName"
                 id="firstName"
+                autoComplete="off"
                 placeholder="John"
                 onChange={handleChange}
                 className="form-control"
@@ -83,6 +97,7 @@ const Signup = () => {
                 name="lastName"
                 id="lastName"
                 placeholder="Doe"
+                autoComplete="off"
                 onChange={handleChange}
                 className="form-control"
                 required
@@ -94,6 +109,7 @@ const Signup = () => {
                 type="password"
                 name="password"
                 id="password"
+                autoComplete="off"
                 placeholder="password"
                 onChange={handleChange}
                 className="form-control"

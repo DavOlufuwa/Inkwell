@@ -19,10 +19,13 @@ const App = () => {
         vertical: "bottom",
         horizontal: "right",
       }}
+      autoHideDuration={3000}
       style={{
-        color: darkMode ? "white" : "black",
+        color: darkMode ? "#819238" : "#F2F2F2",
         padding: "1rem 1.25rem",
-        backgroundColor: darkMode ? "black" : "white",
+        maxWidth: "max-content",
+        backgroundColor: darkMode ? "#9685BF" : "#7D5FC5",
+        
       }}
     >
       <Routes>
