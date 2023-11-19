@@ -42,14 +42,14 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-[100svh]">
+    <div className="min-h-[90svh] ">
       <div>
-        <h1>INKWELL</h1>
+        <h2>Create your inkwell profile</h2>
       </div>
-      <section>
+      <section className="mx-auto">
         <div>
-          <form onSubmit={handleSubmit}>
-            <div>
+          <form onSubmit={handleSubmit} className="form-case">
+            <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
                 type="email"
@@ -57,10 +57,11 @@ const Signup = () => {
                 id="email"
                 placeholder="johndoe@gmail.com"
                 onChange={handleChange}
+                className="form-control"
                 required
               />
             </div>
-            <div>
+            <div className="form-group">
               <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
@@ -68,10 +69,11 @@ const Signup = () => {
                 id="firstName"
                 placeholder="John"
                 onChange={handleChange}
+                className="form-control"
                 required
               />
             </div>
-            <div>
+            <div className="form-group">
               <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
@@ -79,10 +81,11 @@ const Signup = () => {
                 id="lastName"
                 placeholder="Doe"
                 onChange={handleChange}
+                className="form-control"
                 required
               />
             </div>
-            <div>
+            <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
@@ -90,6 +93,7 @@ const Signup = () => {
                 id="password"
                 placeholder="password"
                 onChange={handleChange}
+                className="form-control"
                 required
               />
             </div>

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../routes/authRequests";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
+  const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -15,14 +17,31 @@ const Login = () => {
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
-    onSuccess: () => {
+    onSuccess: (newUser) => {
+      window.alert("login successful");
       setCredentials({
         email: "",
         password: "",
-      })
+      });
+      setAuth({
+        ...auth,
+        email: newUser.email,
+        fullName: newUser.fullName,
+        accessToken: newUser.accessToken,
+      });
+      setTimeout(() => {
+        console.log(auth);
+      }, 3000)
       navigate(from, { replace: true });
-    }
-  })
+    },
+    onError: () => {
+      window.alert("error logging in");
+      setCredentials({
+        email: "",
+        password: "",
+      });
+    },
+  });
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -31,7 +50,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     loginMutation.mutate(credentials);
-  }
+  };
 
   return (
     <div className="min-h-[100svh]">

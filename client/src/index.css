@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,14 +6,30 @@
 
 @layer base {
   html {
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: "Nunito Sans", sans-serif;
   }
 
   body {
     @apply m-0 p-0 box-border;
   }
 
-  .nav-link{
-    @apply bg-none text-t-light dark:text-t-dark font-medium duration-200 text-lg hover:text-d-light
+  .nav-link {
+    @apply bg-none text-t-light dark:text-t-dark font-medium duration-200 text-lg hover:text-d-light;
+  }
+
+  .form-case {
+    @apply flex flex-col gap-3;
+  }
+
+  .form-group {
+    @apply flex flex-col gap-1;
+  }
+
+  .form-group > label {
+    @apply font-bold uppercase text-xs text-d-light dark:text-d-dark;
+  }
+
+  .form-control {
+    @apply bg-bg-light  rounded-sm py-1 px-2 outline-1 focus:outline-d-dark placeholder:italic placeholder:font-light placeholder:text-sm dark:bg-gray-400 dark:placeholder:text-gray-600;
   }
 }

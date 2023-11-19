@@ -20,7 +20,7 @@ loginRouter.post("/", async (request, response) => {
   const userForToken = {
     email: user.email,
     id: user._id,
-    role: user.role
+    role: user.role,
   };
 
   const accessToken = jwt.sign(userForToken, process.env.SECRET_TOKEN_KEY, {
@@ -31,19 +31,25 @@ loginRouter.post("/", async (request, response) => {
     expiresIn: "1d",
   });
 
+  // save refresh token in with the User
+  user.refreshToken = refreshToken;
+  
+  await user.save();
+
+
   response
-  .status(200)
-  .cookie("jwt", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000,
-  })
-  .send({
-    email: user.email,
-    fullName: `${user.firstName} ${user.lastName}`, 
-    accessToken,
-  })
+    .status(200)
+    .cookie("jwt", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
+    })
+    .send({
+      email: user.email,
+      fullName: `${user.firstName} ${user.lastName}`,
+      accessToken,
+    });
 });
 
-module.exports = loginRouter
+module.exports = loginRouter;
