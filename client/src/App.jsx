@@ -22,7 +22,8 @@ const App = () => {
       autoHideDuration={3000}
       style={{
         color: darkMode ? "#819238" : "#F2F2F2",
-        padding: "1rem 1.25rem",
+        padding: "0.5rem 1.25rem",
+        fontSize: "1.125rem",
         maxWidth: "max-content",
         backgroundColor: darkMode ? "#9685BF" : "#7D5FC5",
         

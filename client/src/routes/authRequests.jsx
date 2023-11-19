@@ -1,7 +1,7 @@
 import axios from "axios";
-const loginUrl = "http://localhost:2500/api/login";
-const signupUrl = "http://localhost:2500/api/users";
-const logooutUrl = "http://localhost:2500/api/logout";
+const loginUrl = "/api/login";
+const signupUrl = "/api/users";
+const logooutUrl = "/api/logout";
 
 export const loginUser = async (credentials) => {
   const response = await axios.post(loginUrl, credentials);
