@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link , useNavigate , useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { signupUser } from "../routes/authRequests";
 
@@ -24,7 +24,7 @@ const Signup = () => {
       window.alert("error creating new user");
     },
   });
-  
+
   const [credentials, setCredentials] = useState({
     email: "",
     firstname: "",
@@ -44,7 +44,10 @@ const Signup = () => {
   return (
     <div className="min-h-[90svh] flex flex-col">
       <div className="text-t-light dark:text-t-dark text-center text-xl my-12">
-        <h2>Create your <span className="font-black uppercase">Inkwell</span> profile</h2>
+        <h2>
+          Create your <span className="font-black uppercase">Inkwell</span>{" "}
+          account
+        </h2>
       </div>
       <section className="sm:grid sm:place-content-center">
         <div>
@@ -103,9 +106,12 @@ const Signup = () => {
           </form>
         </div>
         <div>
-          <div className="mt-10  text-center text-t-light dark:text-t-dark">
+          <div className="mt-10 text-center text-t-light dark:text-t-dark">
             Already have an account ?{" "}
-            <Link to="/login" className="underline font-bold tracking-wide text-d-dark hover:text-d-light">
+            <Link
+              to="/login"
+              className="underline font-bold tracking-wide text-d-light"
+            >
               Login here
             </Link>
           </div>

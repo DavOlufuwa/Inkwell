@@ -53,25 +53,29 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[100svh]">
-      <div>
-        <h1>INKWELL</h1>
+    <div className="min-h-[70svh]">
+      <div className="text-t-light dark:text-t-dark text-center text-xl my-12">
+        <h2>
+          Sign in to your <span className="font-black uppercase">Inkwell</span>{" "}
+          account
+        </h2>
       </div>
-      <section>
+      <section className="sm:grid sm:place-content-center">
         <div>
-          <form onSubmit={handleSubmit}>
-            <div>
+          <form onSubmit={handleSubmit} className="form-case">
+            <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                placeholder="email"
+                placeholder="johndoe@gmail.com"
                 required
                 onChange={handleChange}
+                className="form-control"
               />
             </div>
-            <div>
+            <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
@@ -79,20 +83,23 @@ const Login = () => {
                 id="password"
                 placeholder="password"
                 onChange={handleChange}
+                className="form-control"
                 required
               />
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" className="btn">
+              Login
+            </button>
           </form>
         </div>
         <div>
-          <div className="mt-10 text-sm text-center">
+          <div className="mt-10 text-center text-t-light dark:text-t-dark">
             Don't have an account ?{" "}
             <Link
               to="/signup"
-              className="underline text-c-others font-semibold"
+              className="underline font-bold tracking-wide text-d-light"
             >
-              create one here
+              Create one here
             </Link>
           </div>
         </div>

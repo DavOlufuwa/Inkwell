@@ -42,8 +42,8 @@ const Navigation = () => {
         </Link>
       </div>
       <div
-        className={`duration-300 absolute min-h-screen left-0 top-[-100%] w-full flex items-center px-8 md:px-5 lg:static lg:min-h-max lg:w-auto z-40 ${
-          menuOpen && "top-[0%]"
+        className={`bg-bg-light dark:bg-bg-dark duration-300 absolute min-h-screen left-0 top-[-107%] w-full flex items-center px-8 md:px-5 lg:bg-inherit lg:static lg:min-h-max lg:w-auto z-40 ${
+          menuOpen && "top-[-0%]"
         }`}
       >
         <ul className="bg-transparent w-full flex flex-col gap-8 md:flex-row md:items-center md:gap-[3vw]">
