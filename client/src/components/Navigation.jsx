@@ -59,7 +59,7 @@ const Navigation = () => {
           </li>
           <li className="boom">
             <NavLink
-              to="scheduledrive"
+              to="newblog"
               className="nav-link"
               onClick={closeMenu}
             >

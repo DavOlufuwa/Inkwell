@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { SnackbarProvider } from "notistack";
 import useTheme from "./hooks/useTheme";
+import FormEdition from "./pages/FormEdition";
 
 const App = () => {
   const { darkMode } = useTheme();
@@ -36,6 +37,7 @@ const App = () => {
             <Route path=":id" element={<BlogDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="newblog" element={<FormEdition/>} />
           </Route>
         </Route>
       </Routes>
