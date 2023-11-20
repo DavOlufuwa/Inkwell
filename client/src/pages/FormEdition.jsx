@@ -1,31 +1,40 @@
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import UploadWidget from "../components/UploadWidget";
 const FormEdition = () => {
   const [tags, setTags] = useState([]);
+  const inputRef = useRef();
   const [imgLink, setImgLink] = useState("");
 
+  const removeTag = (i) => {
+    const newTags = [...tags];
+    newTags.splice(i, 1);
+    setTags(newTags);
+  };
 
-  const handleImgLink = (e) => {
-    
-  }
   const handleTags = (e) => {
-    e.preventDefault();
-    if (
-      (e.key === "Enter" || e.keyCode === 13) &&
-      e.target.value.trim !== ""
-    ) {
-      setTags([...tags, e.target.value.trim()]);
-      e.target.value = "";
+    const value = e.target.value.trim();
+    if ((e.key === "Enter" || e.keyCode === 13) && value !== "") {
+      e.preventDefault();
+      setTags([...tags, value]);
+      inputRef.current.value = "";
+    } else if (e.key === "Backspace" && !value) {
+      removeTag(tags.length - 1);
     }
   };
-  const deleteTag = (index) => {
-    const filterTag = tags.filter((tag, i) => i !== index);
-    setTags(filterTag);
-  };
 
-  
+  const handleBlur = (e) => {
+    const val = e.target.value;
+    if (val) {
+      if (tags.find((tag) => tag.toLowerCase() === val.toLowerCase())) {
+        return;
+      }
+      setTags([...tags, val]);
+      inputRef.current.value = "";
+      inputRef.current.focus();
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -33,7 +42,10 @@ const FormEdition = () => {
         <h2>Create a new blog post</h2>
       </div>
       <section className="sm:grid sm:place-content-center">
-        <form className="form-case gap-4 md:min-w-[45rem]">
+        <form
+          className="form-case gap-4 md:min-w-[45rem]"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div className="form-group">
             <label htmlFor="title">Blog Title</label>
             <input
@@ -51,9 +63,11 @@ const FormEdition = () => {
               type="text"
               name="tags"
               autoComplete="off"
-              placeholder="type a tag and press enter"
+              placeholder="Type a tag and press enter"
               id="tags"
               onKeyDown={handleTags}
+              onBlur={handleBlur}
+              ref={inputRef}
               required
               className="form-control"
             />
@@ -69,14 +83,14 @@ const FormEdition = () => {
                   <span className="break-all">{tag}</span>
                   <FontAwesomeIcon
                     icon={faTimesCircle}
-                    onClick={() => deleteTag(index)}
+                    onClick={() => removeTag(index)}
                     className="cursor-pointer"
                   />
                 </div>
               ))}
             </div>
           )}
-          <UploadWidget />
+          <UploadWidget imgProps={{ imgLink, setImgLink }} />
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea name="description" rows="5" required></textarea>
@@ -85,6 +99,9 @@ const FormEdition = () => {
             <label htmlFor="content">Content</label>
             <textarea name="content" id="content" rows="5" required></textarea>
           </div>
+          <button type="submit" className="btn">
+            Create Post
+          </button>
         </form>
       </section>
     </div>
