@@ -8,6 +8,9 @@ import Signup from "./pages/Signup";
 import { SnackbarProvider } from "notistack";
 import useTheme from "./hooks/useTheme";
 import FormEdition from "./pages/FormEdition";
+import RequireAuth from "./components/RequireAuth";
+import Profile from "./pages/Profile";
+
 
 const App = () => {
   const { darkMode } = useTheme();
@@ -37,7 +40,15 @@ const App = () => {
             <Route path=":id" element={<BlogDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
-            <Route path="newblog" element={<FormEdition/>} />
+
+            {/* Protexted Routes */}
+            <Route element={<RequireAuth />}>
+              <Route path="newblog" element={<FormEdition/>} />
+            </Route>
+
+            <Route element={<RequireAuth />}>
+              <Route path="profile/:username" element={<Profile />} />
+            </Route>            
           </Route>
         </Route>
       </Routes>

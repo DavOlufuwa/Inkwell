@@ -27,6 +27,7 @@ const Login = () => {
         }
       });
       setCredentials({
+        ...credentials,
         email: "",
         password: "",
       });
@@ -35,18 +36,17 @@ const Login = () => {
         email: newUser.email,
         fullName: newUser.fullName,
         accessToken: newUser.accessToken,
+        role: newUser.role
       });
-      setTimeout(() => {
-        console.log(auth);
-      }, 3000)
       navigate(from, { replace: true });
     },
     onError: () => {
-      enqueueSnackbar("Error logging in, please try again");
       setCredentials({
+        ...credentials,
         email: "",
         password: "",
       });
+      enqueueSnackbar("Error logging in, please try again");
     },
   });
 

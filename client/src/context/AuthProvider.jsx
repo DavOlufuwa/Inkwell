@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
     email: "",
     fullName: "",
     accessToken: "",
+    role: "",
   });
 
   return (

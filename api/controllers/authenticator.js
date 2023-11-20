@@ -48,6 +48,7 @@ loginRouter.post("/", async (request, response) => {
     .send({
       email: user.email,
       fullName: `${user.firstName} ${user.lastName}`,
+      role: user.role,
       accessToken,
     });
 });
