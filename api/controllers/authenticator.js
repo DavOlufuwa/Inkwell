@@ -46,6 +46,7 @@ loginRouter.post("/", async (request, response) => {
       maxAge: 24 * 60 * 60 * 1000,
     })
     .send({
+      id: user.id,
       email: user.email,
       fullName: `${user.firstName} ${user.lastName}`,
       role: user.role,

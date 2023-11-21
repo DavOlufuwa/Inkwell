@@ -33,6 +33,7 @@ const Login = () => {
       });
       setAuth({
         ...auth,
+        id: newUser.id,
         email: newUser.email,
         fullName: newUser.fullName,
         accessToken: newUser.accessToken,

@@ -5,7 +5,7 @@ const RequireAuth = () => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  return auth?.role === import.meta.env.VITE_USER_ROLE ? (
+  return auth?.role === Number(import.meta.env.VITE_USER_ROLE)  ? (
     <Outlet />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />

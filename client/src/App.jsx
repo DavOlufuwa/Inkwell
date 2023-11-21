@@ -10,6 +10,7 @@ import useTheme from "./hooks/useTheme";
 import FormEdition from "./pages/FormEdition";
 import RequireAuth from "./components/RequireAuth";
 import Profile from "./pages/Profile";
+import Error from "./pages/Error";
 
 
 const App = () => {
@@ -37,18 +38,22 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route element={<HomeLayout />}>
             <Route index element={<Home />} />
-            <Route path=":id" element={<BlogDetails />} />
+            <Route path="blog/:id" element={<BlogDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
-            {/* Protexted Routes */}
+            {/* Protected Routes */}
             <Route element={<RequireAuth />}>
-              <Route path="newblog" element={<FormEdition/>} />
+              <Route path="newblog" element={<FormEdition editMode={false}/>} />
             </Route>
 
             <Route element={<RequireAuth />}>
-              <Route path="profile/:username" element={<Profile />} />
+              <Route path="editblog/:id" element={<FormEdition editMode={true} />} />
+            </Route>
+            <Route element={<RequireAuth />}>
+              <Route path="profile/:id" element={<Profile />} />
             </Route>            
+            <Route path="*" element={<Error />}/> 
           </Route>
         </Route>
       </Routes>

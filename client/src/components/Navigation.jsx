@@ -9,12 +9,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
+import useAuth from "../hooks/useAuth";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const {darkMode, setDarkMode} = useTheme()
+  const { darkMode, setDarkMode } = useTheme();
   const body = document.querySelector("body");
   const html = document.querySelector("html");
+
+  const { auth } = useAuth();
+
+  const fullNameArray = auth?.fullName.split(" ").map((name) => name[0]);
+
+  const initials = fullNameArray.join("");
 
   const openMenu = () => {
     setMenuOpen(true);
@@ -57,15 +64,6 @@ const Navigation = () => {
               Sign up
             </NavLink>
           </li>
-          <li className="boom">
-            <NavLink
-              to="newblog"
-              className="nav-link"
-              onClick={closeMenu}
-            >
-              Log Out
-            </NavLink>
-          </li> 
           <li className="relative">
             <input
               type="text"
@@ -81,6 +79,38 @@ const Navigation = () => {
         </ul>
       </div>
       <div className="flex items-center gap-4">
+        {auth?.fullName && (
+          <div className="z-50">
+            <div className="uppercase font-bold text-2xl">{initials}</div>
+            <div className="bg-red-500">
+              <ul>
+                <li>
+                  <Link to={`profile/${auth.id}`}>Profile</Link>
+                </li>
+                <li>
+                  <p
+                    to="login"
+                    role="button"
+                    className="nav-link"
+                    onClick={closeMenu}
+                  >
+                    Log Out
+                  </p>
+                </li>
+                <li>
+                  <Link
+                    to="newblog"
+                    role="button"
+                    className="nav-link"
+                    onClick={closeMenu}
+                  >
+                    Create a post
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
         <button
           className=" px-[10px] py-1 z-50 rounded-full flex gap-3"
           onClick={toggleDarkMode}

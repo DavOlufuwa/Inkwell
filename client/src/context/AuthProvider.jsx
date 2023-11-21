@@ -5,10 +5,11 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
+    id: "",
     email: "",
     fullName: "",
     accessToken: "",
-    role: "",
+    role: 0,
   });
 
   return (
