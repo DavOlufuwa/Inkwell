@@ -6,7 +6,7 @@ refreshRouter.get("/", refreshTokenExtractor, async (request, response) => {
   const user = request.user;
   const userForToken = {
     email: user.email,
-    id: user._id,
+    id: user.id,
     role: user.role,
   };
 
@@ -15,6 +15,7 @@ refreshRouter.get("/", refreshTokenExtractor, async (request, response) => {
   });
 
   response.status(200).send({
+    id: user.id,
     email: user.email,
     fullName: `${user.firstName} ${user.lastName}`,
     accessToken,

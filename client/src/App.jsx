@@ -11,6 +11,7 @@ import FormEdition from "./pages/FormEdition";
 import RequireAuth from "./components/RequireAuth";
 import Profile from "./pages/Profile";
 import Error from "./pages/Error";
+import SearchResults from "./pages/SearchResults";
 
 
 const App = () => {
@@ -41,18 +42,21 @@ const App = () => {
             <Route path="blog/:id" element={<BlogDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="search" element={<SearchResults />}/>
 
             {/* Protected Routes */}
             <Route element={<RequireAuth />}>
-              <Route path="newblog" element={<FormEdition editMode={false}/>} />
+              <Route path="newblog" element={<FormEdition editMode={false} />} />
             </Route>
 
             <Route element={<RequireAuth />}>
               <Route path="editblog/:id" element={<FormEdition editMode={true} />} />
             </Route>
+
             <Route element={<RequireAuth />}>
               <Route path="profile/:id" element={<Profile />} />
             </Route>            
+            
             <Route path="*" element={<Error />}/> 
           </Route>
         </Route>

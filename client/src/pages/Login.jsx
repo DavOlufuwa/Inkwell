@@ -1,13 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "../routes/authRequests";
 import useAuth from "../hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
 
 const Login = () => {
   const { auth, setAuth } = useAuth();
+  const emailRef = useRef();
+  const pwdRef = useRef();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -20,6 +23,7 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (newUser) => {
+      queryClient.setQueryData("auth", newUser);
       enqueueSnackbar(`Welcome back, ${newUser.fullName}!`, {
         anchorOrigin: {
           vertical: "top",
@@ -31,6 +35,7 @@ const Login = () => {
         email: "",
         password: "",
       });
+
       setAuth({
         ...auth,
         id: newUser.id,
@@ -42,11 +47,8 @@ const Login = () => {
       navigate(from, { replace: true });
     },
     onError: () => {
-      setCredentials({
-        ...credentials,
-        email: "",
-        password: "",
-      });
+      emailRef.current.value = "";
+      pwdRef.current.value = "";
       enqueueSnackbar("Error logging in, please try again");
     },
   });
@@ -72,12 +74,13 @@ const Login = () => {
         <div>
           <form onSubmit={handleSubmit} className="form-case">
             <div className="form-group">
-              <label htmlFor="username">Email Address</label>
+              <label htmlFor="email">Email Address</label>
               <input
                 type="email"
                 name="email"
                 autoComplete="off"
                 id="email"
+                ref={emailRef}
                 placeholder="johndoe@gmail.com"
                 required
                 onChange={handleChange}
@@ -91,6 +94,7 @@ const Login = () => {
                 name="password"
                 id="password"
                 autoComplete="off"
+                ref={pwdRef}
                 placeholder="password"
                 onChange={handleChange}
                 className="form-control"

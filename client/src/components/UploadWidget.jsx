@@ -2,7 +2,6 @@
 import { useEffect, useRef } from "react";
 import { enqueueSnackbar } from "notistack";
 
-
 const UploadWidget = ({ imgProps }) => {
   const { imgLink, setImgLink } = imgProps;
 

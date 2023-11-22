@@ -10,6 +10,7 @@ import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
+import { QueryCache } from "@tanstack/react-query";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,10 +19,16 @@ const Navigation = () => {
   const html = document.querySelector("html");
 
   const { auth } = useAuth();
+  // const queryCache = new QueryCache({
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
 
+  // const auth = queryCache.find("auth");
   const fullNameArray = auth?.fullName.split(" ").map((name) => name[0]);
 
-  const initials = fullNameArray.join("");
+  const initials = fullNameArray?.join("");
 
   const openMenu = () => {
     setMenuOpen(true);

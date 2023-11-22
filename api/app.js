@@ -9,7 +9,6 @@ const {
   unknownEndpoint,
   errorHandler,
   accessTokenExtractor,
-  refreshTokenExtractor,
 } = require("./utils/middleware");
 const userRouter = require("./controllers/users");
 const loginRouter = require("./controllers/authenticator");
@@ -18,6 +17,7 @@ const logger = require("./utils/logger");
 const blogRouter = require("./controllers/blogs");
 const logoutRouter = require("./controllers/logout");
 const refreshRouter = require("./controllers/refresh");
+const imageRouter = require("./controllers/imageuploader");
 
 const app = express();
 
@@ -39,6 +39,7 @@ app.use(accessTokenExtractor);
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter)
+app.use('/api/uploader', imageRouter)
 app.use('/api/logout', logoutRouter)
 app.use('/api/refresh', refreshRouter)
 app.use(unknownEndpoint)

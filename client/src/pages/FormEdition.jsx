@@ -1,36 +1,51 @@
+/* eslint-disable react/prop-types */
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import UploadWidget from "../components/UploadWidget";
-const FormEdition = () => {
-  const [tags, setTags] = useState([]);
+const FormEdition = ({editMode}) => {
+  
+  const [blogTags, setBlogTags] = useState([]);
   const inputRef = useRef();
   const [imgLink, setImgLink] = useState("");
 
+  const [blogDetails, setBlogDetails] = useState({
+    title : "",
+    tags: [],
+    description: "",
+    content: ""
+  })
+
+  // useEffect(() => {
+  //   if(editMode) {
+
+  //   }
+  // },[])
+
   const removeTag = (i) => {
-    const newTags = [...tags];
+    const newTags = [...blogTags];
     newTags.splice(i, 1);
-    setTags(newTags);
+    setBlogTags(newTags);
   };
 
   const handleTags = (e) => {
     const value = e.target.value.trim();
     if ((e.key === "Enter" || e.keyCode === 13) && value !== "") {
       e.preventDefault();
-      setTags([...tags, value]);
+      setBlogTags([...blogTags, value]);
       inputRef.current.value = "";
     } else if (e.key === "Backspace" && !value) {
-      removeTag(tags.length - 1);
+      removeTag(blogTags.length - 1);
     }
   };
 
   const handleBlur = (e) => {
     const val = e.target.value;
     if (val) {
-      if (tags.find((tag) => tag.toLowerCase() === val.toLowerCase())) {
+      if (blogTags.find((tag) => tag.toLowerCase() === val.toLowerCase())) {
         return;
       }
-      setTags([...tags, val]);
+      setBlogTags([...blogTags, val]);
       inputRef.current.value = "";
       inputRef.current.focus();
     }
@@ -72,9 +87,9 @@ const FormEdition = () => {
               className="form-control"
             />
           </div>
-          {tags.length > 0 && (
+          {blogTags.length > 0 && (
             <div className="flex gap-2 flex-wrap">
-              {tags.map((tag, index) => (
+              {blogTags.map((tag, index) => (
                 <div
                   key={index}
                   role="badge"
