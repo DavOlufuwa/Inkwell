@@ -3,14 +3,12 @@ const { default: mongoose } = require("mongoose");
 const Blog = require("../models/blog");
 const { userExtractor } = require("../utils/middleware");
 
-
 // Get all blogs
 blogRouter.get("/", async (request, response) => {
   const { page, limit, search } = request.query;
 
   const pageNumber = parseInt(page);
   const pageSize = parseInt(limit);
-
 
   const searchQuery = search
     ? {
@@ -30,39 +28,40 @@ blogRouter.get("/", async (request, response) => {
 
   const startIndex = (pageNumber - 1) * pageSize;
 
+  const allBlogs = await Blog.find({ ...searchQuery })
+    .populate("author", {
+      _id: 1,
+      firstName: 1,
+      lastName: 1,
+    })
+    .limit(pageSize)
+    .skip(startIndex);
 
-  const allBlogs = await Blog.find({...searchQuery}).populate("author", {
-    _id: 1,
-    firstName: 1,
-    lastName: 1,
-  }).limit(pageSize).skip(startIndex);
-
-  const totalCount = await Blog.countDocuments({...searchQuery});
+  const totalCount = await Blog.countDocuments({ ...searchQuery });
 
   const results = {
     currentPage: pageNumber,
     totalPages: Math.ceil(totalCount / pageSize),
     totalBlogs: totalCount,
-    paginatedResults: allBlogs
-  }
+    paginatedResults: allBlogs,
+  };
 
-  if(startIndex + pageSize < totalCount) {
+  if (startIndex + pageSize < totalCount) {
     results.next = {
       page: pageNumber + 1,
-      limit: pageSize
-    }
+      limit: pageSize,
+    };
   }
 
-  if(startIndex > 0) {
+  if (startIndex > 0) {
     results.previous = {
       page: pageNumber - 1,
-      limit: pageSize
-    }
+      limit: pageSize,
+    };
   }
 
   response.status(200).json(results);
 });
-
 
 blogRouter.get("/:id", async (request, response) => {
   const blog = await Blog.findById(request.params.id).populate("author", {
@@ -71,15 +70,13 @@ blogRouter.get("/:id", async (request, response) => {
     lastName: 1,
   });
   response.json(blog);
-})
-
+});
 
 // Creating a new blog
 blogRouter.post("/", userExtractor, async (request, response) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const session = await mongoose.startSession()
-  session.startTransaction()
-  
   const user = request.user;
   const body = request.body;
 
@@ -92,28 +89,29 @@ blogRouter.post("/", userExtractor, async (request, response) => {
   const blog = new Blog({
     title: body.title,
     description: body.description,
+    imageUrl: body.imageUrl,
+    imagePublicId: body.imagePublicId,
     tags: body.tags,
     author: user.id,
     content: body.content,
     readingTime: readTime(),
   });
 
-  const savedBlog = await blog.save({session});
+  const savedBlog = await blog.save({ session });
 
   user.blogs = user.blogs.concat(savedBlog.id);
 
-  await user.save({session});
+  await user.save({ session });
 
-  await session.commitTransaction()
-  session.endSession()
+  await session.commitTransaction();
+  session.endSession();
   response.status(201).json(savedBlog);
-
 });
 
 //Updating a blog post
 blogRouter.put("/:id", userExtractor, async (request, response) => {
   const user = request.user;
-  if(!user) {
+  if (!user) {
     return response.status(403).json({ error: "You are not authorized" });
   }
 
@@ -126,35 +124,45 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
   const blogContent = blog.content.match(/\w+/g).length;
   const bodyContent = body.content?.match(/\w+/g).length;
 
-  const update = {}
+  const update = {};
 
-  const fields = ["title", "description", "readingTime" ,"tags", "content", "state"];
+  const fields = [
+    "title",
+    "description",
+    "imageUrl",
+    "imagePublicId",
+    "readingTime",
+    "tags",
+    "content",
+    "state",
+  ];
 
-  fields.forEach(field => {
+  fields.forEach((field) => {
     if (body[field]) {
       update[field] = body[field];
     }
   });
 
-  if(blogContent !== bodyContent) {
+  if (blogContent !== bodyContent) {
     update.readingTime = Math.ceil(bodyContent / 200);
   }
 
- if (body.state === "published") {
-   update.state = "published";
-   update["timeStamp.publishedAt"] = new Date();
- }
+  if (body.state === "published") {
+    update.state = "published";
+    update["timeStamp.publishedAt"] = new Date();
+  }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(blogId, update, { new: true });
+  const updatedBlog = await Blog.findByIdAndUpdate(blogId, update, {
+    new: true,
+  });
 
   response.status(200).json(updatedBlog);
-})
-
+});
 
 // Deleting a blog
 blogRouter.delete("/:id", userExtractor, async (request, response) => {
   const user = request.user;
-  if(!user) {
+  if (!user) {
     return response.status(403).json({ error: "You are not authorized" });
   }
 
@@ -162,8 +170,7 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
 
   await Blog.findByIdAndDelete(blogId);
 
-  response.status(204).end()
-})
+  response.status(204).end();
+});
 
-
-module.exports = blogRouter
+module.exports = blogRouter;

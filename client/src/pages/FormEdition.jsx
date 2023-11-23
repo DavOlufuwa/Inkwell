@@ -3,22 +3,30 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import UploadWidget from "../components/UploadWidget";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { enqueueSnackbar } from "notistack";
 
-const FormEdition = ({editMode}) => {
-  
+const FormEdition = ({ editMode }) => {
+  const axiosPrivate = useAxiosPrivate();
   const [blogTags, setBlogTags] = useState([]);
   const inputRef = useRef();
-  const [imgDetails, setImgDetails] = useState({
-    url: "",
-    public_id: "",
+  const [blogDetails, setBlogDetails] = useState({
+    title: "",
+    description: "",
+    content: "",
+    tags: [],
+    imageUrl: "",
+    imagePublicId: "",
   });
 
-  const [blogDetails, setBlogDetails] = useState({
-    title : "",
-    tags: [],
-    description: "",
-    content: ""
-  })
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setBlogDetails({
+      ...blogDetails,
+      [name]: value,
+    });
+  };
 
   // useEffect(() => {
   //   if(editMode) {
@@ -30,6 +38,10 @@ const FormEdition = ({editMode}) => {
     const newTags = [...blogTags];
     newTags.splice(i, 1);
     setBlogTags(newTags);
+    setBlogDetails(prevBlogDetails => ({
+      ...prevBlogDetails,
+      tags: newTags,
+    }));
   };
 
   const handleTags = (e) => {
@@ -37,9 +49,12 @@ const FormEdition = ({editMode}) => {
     if ((e.key === "Enter" || e.keyCode === 13) && value !== "") {
       e.preventDefault();
       setBlogTags([...blogTags, value]);
+      setBlogDetails( prevBlogDetails => ({
+        ...prevBlogDetails,
+        tags: [...prevBlogDetails.tags, value],
+      }));
       inputRef.current.value = "";
-    } else if (e.key === "Backspace" && !value) {
-      removeTag(blogTags.length - 1);
+      inputRef.current.focus();
     }
   };
 
@@ -55,6 +70,33 @@ const FormEdition = ({editMode}) => {
     }
   };
 
+  const createPost = async () => {
+    const response = await axiosPrivate.post("/api/blogs", blogDetails);
+    return response.data;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createPost();
+      enqueueSnackbar("Blog created successfully");
+      setBlogDetails({
+        ...blogDetails,
+        title: "",
+        description: "",
+        content: "",
+        tags: [],
+        imageUrl: "",
+        imagePublicId: "",
+      })
+    }
+    catch (error) {
+      enqueueSnackbar("Error creating blog", error.message);
+    }
+  }
+
+
+
   return (
     <div className="min-h-screen">
       <div className="text-t-light dark:text-t-dark text-center text-xl my-12">
@@ -63,7 +105,7 @@ const FormEdition = ({editMode}) => {
       <section className="sm:grid sm:place-content-center">
         <form
           className="form-case gap-4 md:min-w-[45rem]"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
         >
           <div className="form-group">
             <label htmlFor="title">Blog Title</label>
@@ -72,6 +114,8 @@ const FormEdition = ({editMode}) => {
               name="title"
               autoComplete="off"
               id="title"
+              value={blogDetails.title}
+              onChange={handleChange}
               required
               className="form-control"
             />
@@ -87,7 +131,6 @@ const FormEdition = ({editMode}) => {
               onKeyDown={handleTags}
               onBlur={handleBlur}
               ref={inputRef}
-              required
               className="form-control"
             />
           </div>
@@ -109,14 +152,30 @@ const FormEdition = ({editMode}) => {
               ))}
             </div>
           )}
-          <UploadWidget imgProps={{ imgDetails, setImgDetails }} />
+          <UploadWidget imgProps={{ setBlogDetails, blogDetails }} />
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea name="description" rows="5" required></textarea>
+            <textarea
+              name="description"
+              rows="5"
+              id="description"
+              onChange={handleChange}
+              defaultValue={blogDetails.description}
+              required
+            >
+            </textarea>
           </div>
           <div className="form-group">
             <label htmlFor="content">Content</label>
-            <textarea name="content" id="content" rows="5" required></textarea>
+            <textarea
+              name="content"
+              id="content"
+              rows="5"
+              onChange={handleChange}
+              defaultValue={blogDetails.content}
+              required
+            >
+            </textarea>
           </div>
           <button type="submit" className="btn">
             Create Post

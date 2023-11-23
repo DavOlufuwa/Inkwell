@@ -62,6 +62,7 @@ const Login = () => {
       emailRef.current.value = "";
       pwdRef.current.value = "";
       enqueueSnackbar("Error logging in, please try again");
+      setLoggingIn(false);
     },
   });
 

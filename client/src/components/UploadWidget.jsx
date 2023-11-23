@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import TailSpin from "/icons/tail-spin.svg";
 import useTheme from "../hooks/useTheme";
-import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 
 const UploadWidget = ({ imgProps }) => {
-  const { imgDetails, setImgDetails } = imgProps;
+  const { blogDetails , setBlogDetails } = imgProps;
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { darkMode } = useTheme();
 
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME;
@@ -30,13 +30,12 @@ const UploadWidget = ({ imgProps }) => {
       },
       function (error, result) {
         if (result.event === "success") {
-          setImgDetails({
-            ...imgDetails,
-            public_id: result.info.public_id,
-            url: result.info.url,
-          });
-          console.log(result.info);
           setIsLoading(false);
+          setBlogDetails({
+            ...blogDetails,
+            imageUrl: result.info.url,
+            imagePublicId: result.info.public_id,
+          })
           enqueueSnackbar("Image uploaded successfully");
         }
         if (error) {
@@ -47,36 +46,42 @@ const UploadWidget = ({ imgProps }) => {
   });
 
   const openWidget = () => {
+    if (blogDetails.imageUrl !== "" && blogDetails.imagePublicId !== "") {
+      enqueueSnackbar(
+        "You can only upload a single image, please delete the previous image"
+      );
+      return;
+    }
     setIsLoading(true);
+    
     widgetRef.current.open();
+    
     setIsLoading(false);
   };
 
-  console.log(imgDetails.public_id);
-
-  const deleteImg = async (public_id) => {
-    const response = await axios.post(`/api/uploader/${public_id}`, {
-      "Content-type": "application/json",
+  const deleteImg = async () => {
+    const response = await axios.post("/api/upload", {
+      public_id: blogDetails.imagePublicId,
     });
     return response;
   };
 
-  const deleteImage = useMutation({
-    mutationFn: deleteImg(imgDetails.public_id),
-    onSuccess: () => {
-      setImgDetails({
-        url: "",
-        public_id: "",
-      });
+  const destroyImage = async () => {
+    try {
+      setIsDeleting(true);
+      await deleteImg();
+      setBlogDetails({
+        ...blogDetails,
+        imageUrl: "",
+        imagePublicId: "",
+      })
       enqueueSnackbar("Image deleted successfully");
-    },
-    onError: () => {
-      enqueueSnackbar("Error deleting image");
-    },
-  });
-
-  const handleDelete = () => {
-    deleteImage.mutate();
+      setIsDeleting(false);
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar("Error deleting image", error.message);
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -87,7 +92,7 @@ const UploadWidget = ({ imgProps }) => {
           type="text"
           name="imageUrl"
           id="imageUrl"
-          value={imgDetails.url}
+          value={blogDetails.imageUrl}
           readOnly
           required
           placeholder="Image URL"
@@ -107,21 +112,36 @@ const UploadWidget = ({ imgProps }) => {
           )}
         </button>
       </div>
-      {imgDetails.url !== "" && (
+      {blogDetails.imageUrl !== "" ? (
         <div>
           <img
-            src={imgDetails.url}
-            className="max-w-lg max-h-32 object-cover"
+            src={blogDetails.imageUrl}
+            className="w-full max-h-32 object-center rounded-md"
           />
           <div>
-            <FontAwesomeIcon
-              icon={faTrashAlt}
-              style={{
-                color: darkMode ? "white" : "black",
-              }}
-              onClick={() => handleDelete}
-            />
+            <button
+              type="button"
+              onClick={destroyImage}
+              disabled={isDeleting}
+              className="text-xs bg-d-light disabled:cursor-not-allowed disabled:bg-d-dark text-t-dark py-[10px] px-2 w-24 mt-2 rounded-md outline-none font-medium"
+            >
+              {isDeleting ? (
+                <img src={TailSpin} className="w-4 h-4 mx-auto" />
+              ) : (
+                "Delete Image"
+              )}
+            </button>
           </div>
+        </div>
+      ) : (
+        <div className="h-32 grid place-content-center rounded-md bg-d-dark ring-1 ring-gray-500 dark:bg-d-dark ">
+          <FontAwesomeIcon
+            icon={faImage}
+            className="w-5 h-5"
+            style={{
+              color: darkMode ? "white" : "black",
+            }}
+          />
         </div>
       )}
     </div>

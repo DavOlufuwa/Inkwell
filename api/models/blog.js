@@ -1,4 +1,4 @@
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const blogSchema = new Schema({
@@ -11,11 +11,19 @@ const blogSchema = new Schema({
     type: String,
     required: true,
   },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+  imagePublicId: {
+    type: String,
+    required: true,
+  },
   author: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
-  }, 
+  },
   state: {
     type: String,
     enum: ["draft", "published"],
@@ -32,22 +40,22 @@ const blogSchema = new Schema({
   tags: {
     type: [String],
     default: [],
-  }, 
+  },
   content: {
     type: String,
     required: true,
   },
   timeStamp: {
-    createdAt : {
+    createdAt: {
       type: Date,
-      default: Date.now
-    }, 
-    publishedAt : {
+      default: Date.now,
+    },
+    publishedAt: {
       type: Date,
-      default: Date.now
-    }
-  }
-})
+      default: Date.now,
+    },
+  },
+});
 
 blogSchema.set("toJSON", {
   transform: (document, returnedObject) => {
@@ -55,8 +63,8 @@ blogSchema.set("toJSON", {
     delete returnedObject._id;
     delete returnedObject.__v;
   },
-})
+});
 
 const Blog = model("Blog", blogSchema);
 
-module.exports = Blog
+module.exports = Blog;
