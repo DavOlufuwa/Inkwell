@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import TailSpin from "/icons/tail-spin.svg";
 import useTheme from "../hooks/useTheme";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const UploadWidget = ({ imgProps }) => {
   const { imgDetails, setImgDetails } = imgProps;
@@ -28,14 +30,13 @@ const UploadWidget = ({ imgProps }) => {
       },
       function (error, result) {
         if (result.event === "success") {
-          setImgDetails(
-            {
-              ...imgDetails,
-              public_id: result.info.public_id,
-              url: result.info.url,
-            }
-            );
-          setIsLoading(false)  
+          setImgDetails({
+            ...imgDetails,
+            public_id: result.info.public_id,
+            url: result.info.url,
+          });
+          console.log(result.info);
+          setIsLoading(false);
           enqueueSnackbar("Image uploaded successfully");
         }
         if (error) {
@@ -48,8 +49,35 @@ const UploadWidget = ({ imgProps }) => {
   const openWidget = () => {
     setIsLoading(true);
     widgetRef.current.open();
-  }
+    setIsLoading(false);
+  };
 
+  console.log(imgDetails.public_id);
+
+  const deleteImg = async (public_id) => {
+    const response = await axios.post(`/api/uploader/${public_id}`, {
+      "Content-type": "application/json",
+    });
+    return response;
+  };
+
+  const deleteImage = useMutation({
+    mutationFn: deleteImg(imgDetails.public_id),
+    onSuccess: () => {
+      setImgDetails({
+        url: "",
+        public_id: "",
+      });
+      enqueueSnackbar("Image deleted successfully");
+    },
+    onError: () => {
+      enqueueSnackbar("Error deleting image");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteImage.mutate();
+  };
 
   return (
     <div className="form-group">
@@ -74,21 +102,24 @@ const UploadWidget = ({ imgProps }) => {
         >
           {isLoading ? (
             <img src={TailSpin} className="w-4 h-4 mx-auto" />
-          )
-          : (
-            "Select Image"    
+          ) : (
+            "Select Image"
           )}
         </button>
       </div>
       {imgDetails.url !== "" && (
         <div>
-          <img src={imgDetails.url} className="max-w-lg max-h-32 object-cover" />
+          <img
+            src={imgDetails.url}
+            className="max-w-lg max-h-32 object-cover"
+          />
           <div>
-            <FontAwesomeIcon icon={faTrashAlt} 
+            <FontAwesomeIcon
+              icon={faTrashAlt}
               style={{
                 color: darkMode ? "white" : "black",
-              }
-              }
+              }}
+              onClick={() => handleDelete}
             />
           </div>
         </div>

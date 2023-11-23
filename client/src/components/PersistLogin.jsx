@@ -11,7 +11,7 @@ const PersistLogin = () => {
   const { darkMode } = useTheme();
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
     const verifyRefreshToken = async () => {
       try {
         await refreshMutation.mutateAsync();
@@ -21,18 +21,15 @@ const PersistLogin = () => {
         isMounted && setIsLoading(false);
       }
     };
-    !auth?.accessToken && persist
-      ? verifyRefreshToken()
-      : setIsLoading(false);
-
-      return () => isMounted = false
-
+    !auth?.accessToken && persist ? verifyRefreshToken() : setIsLoading(false);
+    return () => (isMounted = false);
   }, []);
-
 
   return (
     <>
-      {isLoading ? (
+      {!persist ? (
+        <Outlet />
+      ) : isLoading ? (
         <svg
           width="38"
           height="38"

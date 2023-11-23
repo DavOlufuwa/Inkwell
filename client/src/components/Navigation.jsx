@@ -23,9 +23,7 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    const response = await axiosPrivate.get("/api/logout", {
-      withCredentials: true,
-    });
+    const response = await axiosPrivate.get("/api/logout");
     return response.data;
   };
 
