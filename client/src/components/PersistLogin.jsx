@@ -4,26 +4,31 @@ import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
 import useTheme from "../hooks/useTheme";
 
-
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refreshMutation = useRefreshToken();
-  const { auth } = useAuth();
-  const {darkMode} = useTheme()
+  const { auth, persist } = useAuth();
+  const { darkMode } = useTheme();
 
   useEffect(() => {
+    let isMounted = true
     const verifyRefreshToken = async () => {
       try {
-        await refreshMutation.mutate();
+        await refreshMutation.mutateAsync();
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoading(false);
+        isMounted && setIsLoading(false);
       }
     };
+    !auth?.accessToken && persist
+      ? verifyRefreshToken()
+      : setIsLoading(false);
 
-    !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
-  }, []); 
+      return () => isMounted = false
+
+  }, []);
+
 
   return (
     <>
@@ -34,7 +39,6 @@ const PersistLogin = () => {
           viewBox="0 0 38 38"
           xmlns="http://www.w3.org/2000/svg"
           fill={darkMode ? "white" : "black"}
-
         >
           <defs>
             <linearGradient
@@ -84,7 +88,6 @@ const PersistLogin = () => {
       )}
     </>
   );
-
 };
 
 export default PersistLogin;

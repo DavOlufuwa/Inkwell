@@ -1,27 +1,25 @@
-import useAuth from './useAuth'
-import { useMutation} from "@tanstack/react-query";
-import { refreshUser } from '../routes/authRequests';
+import useAuth from "./useAuth";
+import { useMutation } from "@tanstack/react-query";
+import { refreshUser } from "../routes/authRequests";
 
 const useRefreshToken = () => {
-  const { setAuth } = useAuth()
+  const { setAuth } = useAuth();
 
   const refreshMutation = useMutation({
-    mutationFn : refreshUser,
-    onSuccess :(refreshedUser) => {
-      setAuth(prev => {
-        console.log(JSON.stringify(prev))
-        console.log(refreshedUser.data.accessToken)
+    mutationFn: refreshUser,
+    onSuccess: (refreshedUser) => {
+      setAuth((prev) => {
         return {
           ...prev,
           role: refreshedUser.data.role,
-          accessToken: refreshedUser.accessToken
-        }
-      })
-      return refreshedUser.data.accessToken
-    }
-  }) 
+          accessToken: refreshedUser.data.accessToken
+        };
+      });
+      return refreshedUser.data.accessToken;
+    },
+  });
 
-  return refreshMutation
-} 
+  return refreshMutation;
+};
 
-export default useRefreshToken
+export default useRefreshToken;

@@ -1,4 +1,3 @@
-import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import HomeLayout from "./components/HomeLayout";
@@ -12,12 +11,13 @@ import Profile from "./pages/Profile";
 import Error from "./pages/Error";
 import SearchResults from "./pages/SearchResults";
 import PersistLogin from "./components/PersistLogin";
+import { Route, Routes } from "react-router-dom";
 
 const App = () => {
 
   return (
     <SnackbarProvider
-      maxSnack={2}
+    maxSnack={2}
       preventDuplicate
       anchorOrigin={{
         vertical: "bottom",

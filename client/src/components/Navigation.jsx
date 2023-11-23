@@ -7,26 +7,41 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate} from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
-// import { QueryCache } from "@tanstack/react-query";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useMutation } from "@tanstack/react-query";
+import { enqueueSnackbar } from "notistack";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
   const body = document.querySelector("body");
-  
+  const axiosPrivate = useAxiosPrivate();
+  const { auth, setAuth } = useAuth();
+  const navigate = useNavigate();
 
-  const { auth } = useAuth();
-  // const queryCache = new QueryCache({
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
+  const logout = async () => {
+    const response = await axiosPrivate.get("/api/logout", {
+      withCredentials: true,
+    });
+    return response.data;
+  };
 
-  // const auth = queryCache.find("auth");
-  const fullNameArray = auth?.fullName.split(" ").map((name) => name[0]);
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setAuth({});
+      navigate('/login', { replace: true });
+      enqueueSnackbar("Logged out successfully", { autoHideDuration: 3000 });
+    },
+    onError: () => {
+      enqueueSnackbar("Error logging out");
+    },
+  });
+
+  const fullNameArray = auth?.fullName?.split(" ").map((name) => name[0]);
 
   const initials = fullNameArray?.join("");
 
@@ -98,7 +113,7 @@ const Navigation = () => {
                     to="login"
                     role="button"
                     className="nav-link"
-                    onClick={closeMenu}
+                    onClick={() => logoutMutation.mutate()}
                   >
                     Log Out
                   </p>

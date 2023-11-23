@@ -1,13 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "../routes/authRequests";
 import useAuth from "../hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
+import TailSpin from "/icons/tail-spin.svg"
 
 const Login = () => {
-  const { auth, setAuth } = useAuth();
+  const { auth, setAuth, persist, setPersist } = useAuth();
+  const [loggingIn, setLoggingIn] = useState(false);
   const emailRef = useRef();
   const pwdRef = useRef();
   const queryClient = useQueryClient();
@@ -20,6 +22,15 @@ const Login = () => {
     password: "",
   });
 
+
+  const togglePersist = () => {
+    setPersist(prev => !prev);
+  }
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
+
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (newUser) => {
@@ -30,6 +41,7 @@ const Login = () => {
           horizontal: "right",
         }
       });
+      setLoggingIn(false);
       setCredentials({
         ...credentials,
         email: "",
@@ -59,6 +71,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoggingIn(true);
     loginMutation.mutate(credentials);
   };
 
@@ -101,8 +114,24 @@ const Login = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn">
-              Login
+            <div className="form-group flex-row gap-6 items-center">
+              <input
+                type="checkbox"
+                name="persist"
+                id="persist"
+                onChange={togglePersist}
+                checked={persist}
+              />
+              <label htmlFor="persist" >Keep me logged in on this device</label>
+            </div>
+            <button type="submit" className="btn" disabled={loggingIn}>
+              {
+                loggingIn ? (
+                  <img src={TailSpin} alt="TailSpin" className="w-6 h-7 m-auto" />
+                ) : (
+                  "Login"
+                )
+              }
             </button>
           </form>
         </div>

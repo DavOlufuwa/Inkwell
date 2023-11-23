@@ -19,7 +19,7 @@ refreshRouter.get("/", refreshTokenExtractor, async (request, response) => {
     email: user.email,
     role: user.role,
     fullName: `${user.firstName} ${user.lastName}`,
-    accessToken,
+    accessToken: accessToken,
   });
 });
 

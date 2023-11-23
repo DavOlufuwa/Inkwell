@@ -1,9 +1,9 @@
 const User = require("../models/user");
-const { refreshTokenExtractor } = require("../utils/middleware");
+const { userExtractor } = require("../utils/middleware");
 
 const logoutRouter = require("express").Router();
 
-logoutRouter.get("/", refreshTokenExtractor,async (request, response) => {
+logoutRouter.get("/", userExtractor, async (request, response) => {
   
   const user = await User.findOne({email: request.user.email});
 
