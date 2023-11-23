@@ -13,7 +13,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ThemeProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-
           <Routes>
             <Route path="/*" element={<App />} />
           </Routes>

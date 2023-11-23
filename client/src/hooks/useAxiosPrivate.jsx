@@ -24,7 +24,7 @@ const useAxiosPrivate = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
-          const newAccessToken = await refreshMutation.mutateAsync();
+          const newAccessToken = await refreshMutation.mutate();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosPrivate(prevRequest);
         }
@@ -38,7 +38,7 @@ const useAxiosPrivate = () => {
     };
   }, [auth, refreshMutation]);
 
-  return useAxiosPrivate
+  return axiosPrivate;
 };
 
 export default useAxiosPrivate;

@@ -1,10 +1,9 @@
 import useAuth from './useAuth'
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation} from "@tanstack/react-query";
 import { refreshUser } from '../routes/authRequests';
 
 const useRefreshToken = () => {
   const { setAuth } = useAuth()
-  const queryClient = useQueryClient()
 
   const refreshMutation = useMutation({
     mutationFn : refreshUser,
@@ -12,12 +11,9 @@ const useRefreshToken = () => {
       setAuth(prev => {
         console.log(JSON.stringify(prev))
         console.log(refreshedUser.data.accessToken)
-        queryClient.setQueryData('auth', (prev) => ({
-          ...prev,
-          accessToken: refreshedUser.data.accessToken
-        }))
         return {
           ...prev,
+          role: refreshedUser.data.role,
           accessToken: refreshedUser.accessToken
         }
       })

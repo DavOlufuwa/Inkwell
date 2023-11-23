@@ -3,11 +3,15 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import UploadWidget from "../components/UploadWidget";
+
 const FormEdition = ({editMode}) => {
   
   const [blogTags, setBlogTags] = useState([]);
   const inputRef = useRef();
-  const [imgLink, setImgLink] = useState("");
+  const [imgDetails, setImgDetails] = useState({
+    url: "",
+    public_id: "",
+  });
 
   const [blogDetails, setBlogDetails] = useState({
     title : "",
@@ -105,7 +109,7 @@ const FormEdition = ({editMode}) => {
               ))}
             </div>
           )}
-          <UploadWidget imgProps={{ imgLink, setImgLink }} />
+          <UploadWidget imgProps={{ imgDetails, setImgDetails }} />
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea name="description" rows="5" required></textarea>

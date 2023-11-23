@@ -10,13 +10,13 @@ import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
-import { QueryCache } from "@tanstack/react-query";
+// import { QueryCache } from "@tanstack/react-query";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { darkMode, setDarkMode } = useTheme();
+  const { darkMode, toggleDarkMode } = useTheme();
   const body = document.querySelector("body");
-  const html = document.querySelector("html");
+  
 
   const { auth } = useAuth();
   // const queryCache = new QueryCache({
@@ -35,9 +35,8 @@ const Navigation = () => {
     body?.classList.add("overflow-hidden");
   };
 
-  const toggleDarkMode = () => {
-    html?.classList.toggle("dark");
-    setDarkMode(!darkMode);
+  const toggleTheme = () => {
+    toggleDarkMode();
   };
 
   const closeMenu = () => {
@@ -120,7 +119,7 @@ const Navigation = () => {
         )}
         <button
           className=" px-[10px] py-1 z-50 rounded-full flex gap-3"
-          onClick={toggleDarkMode}
+          onClick={toggleTheme}
         >
           {darkMode ? (
             <FontAwesomeIcon

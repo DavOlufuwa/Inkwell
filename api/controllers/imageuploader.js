@@ -34,9 +34,6 @@ const storage = new CloudinaryStorage({
 
 const parser = multer({
   storage: storage,
-  limits: {
-    fileSize: 200000,
-  },
 });
 
 imageRouter.post("/", parser.single("image"), async (request, response) => {

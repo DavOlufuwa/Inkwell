@@ -1,6 +1,8 @@
 import ImageOne from "/images/sample.svg";
 
+
 const BlogDetails = () => {
+
   return (
     <div className="pt-10 md:px-8 lg:px-16 xl:px-32">
       <div className="text-sm sm:text-base my-3 font-medium flex justify-between dark:text-t-dark">
@@ -114,7 +116,7 @@ const BlogDetails = () => {
         mindfulness-based interventions can alleviate symptoms of depression,
         anxiety disorders, and chronic pain. Mastering mindfulness requires
         consistent practice and patience. It’s not about achieving a state of
-        perpetual bliss but rather developing a skill that enhances one's
+        perpetual bliss but rather developing a skill that enhances ones
         relationship with oneself and the world. It involves acknowledging the
         transient nature of thoughts and emotions, recognizing that they come
         and go like passing clouds in the sky.In essence, mastering mindfulness

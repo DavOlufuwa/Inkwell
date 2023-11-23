@@ -1,9 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import TailSpin from "/icons/tail-spin.svg";
+import useTheme from "../hooks/useTheme";
 
 const UploadWidget = ({ imgProps }) => {
-  const { imgLink, setImgLink } = imgProps;
+  const { imgDetails, setImgDetails } = imgProps;
+  const [isLoading, setIsLoading] = useState(false);
+  const { darkMode } = useTheme();
 
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUDNAME;
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOADPRESET;
@@ -22,7 +28,14 @@ const UploadWidget = ({ imgProps }) => {
       },
       function (error, result) {
         if (result.event === "success") {
-          setImgLink(result.info.secure_url);
+          setImgDetails(
+            {
+              ...imgDetails,
+              public_id: result.info.public_id,
+              url: result.info.url,
+            }
+            );
+          setIsLoading(false)  
           enqueueSnackbar("Image uploaded successfully");
         }
         if (error) {
@@ -32,6 +45,12 @@ const UploadWidget = ({ imgProps }) => {
     );
   });
 
+  const openWidget = () => {
+    setIsLoading(true);
+    widgetRef.current.open();
+  }
+
+
   return (
     <div className="form-group">
       <label htmlFor="imageUrl">Image</label>
@@ -40,7 +59,7 @@ const UploadWidget = ({ imgProps }) => {
           type="text"
           name="imageUrl"
           id="imageUrl"
-          value={imgLink}
+          value={imgDetails.url}
           readOnly
           required
           placeholder="Image URL"
@@ -49,14 +68,30 @@ const UploadWidget = ({ imgProps }) => {
         />
         <button
           type="button"
-          onClick={() => widgetRef.current.open()}
-          className="grow min-w-max text-xs bg-d-light dark:bg-d-dark text-t-dark py-1 px-3 rounded-md outline-none font-medium"
+          onClick={openWidget}
+          disabled={isLoading}
+          className="grow min-w-max text-xs bg-d-light text-t-dark py-1 px-3 disabled:cursor-not-allowed disabled:bg-d-dark rounded-md outline-none font-medium"
         >
-          select image
+          {isLoading ? (
+            <img src={TailSpin} className="w-4 h-4 mx-auto" />
+          )
+          : (
+            "Select Image"    
+          )}
         </button>
       </div>
-      {imgLink !== "" && (
-        <img src={imgLink} className="max-w-lg max-h-44 object-cover" />
+      {imgDetails.url !== "" && (
+        <div>
+          <img src={imgDetails.url} className="max-w-lg max-h-32 object-cover" />
+          <div>
+            <FontAwesomeIcon icon={faTrashAlt} 
+              style={{
+                color: darkMode ? "white" : "black",
+              }
+              }
+            />
+          </div>
+        </div>
       )}
     </div>
   );

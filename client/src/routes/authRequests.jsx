@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const loginUrl = "/api/login";
 const signupUrl = "/api/users";
 const logooutUrl = "/api/logout";

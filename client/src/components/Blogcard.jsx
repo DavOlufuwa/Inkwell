@@ -76,7 +76,7 @@ const Blogcard = () => {
           molestiae dolorem delectus culpa? Corporis quo eaque commodi inventore
           tempore!
         </p>
-        <Link to="/24" className="text-d-light dark:text-d-light cursor-pointer after:bg-d-light dark:after:bg-d-light relative font-extrabold  after:duration-200 after:w-0 after:absolute  after:left-0 after:-bottom-1 after:h-[2px] hover:after:w-full ">
+        <Link to="/post/24" className="text-d-light dark:text-d-light cursor-pointer after:bg-d-light dark:after:bg-d-light relative font-extrabold  after:duration-200 after:w-0 after:absolute  after:left-0 after:-bottom-1 after:h-[2px] hover:after:w-full ">
           View Article
         </Link>
       </div>

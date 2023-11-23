@@ -6,7 +6,17 @@ const mongoose = require("mongoose");
 const { userExtractor } = require("../utils/middleware");
 
 // GET ALL USERS 
-userRouter.get("/", async (request, response) => {
+userRouter.get("/", userExtractor, async (request, response) => {
+    const user = request.user;
+
+    if (!user) {
+      return response.status(404).json({
+        error: "user not found",
+      });
+    }
+
+  
+  
   const users = await User.find({})
   response.json(users)
 })
