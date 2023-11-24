@@ -63,6 +63,7 @@ blogRouter.get("/", async (request, response) => {
   response.status(200).json(results);
 });
 
+// Get blog by id
 blogRouter.get("/:id", async (request, response) => {
   const blog = await Blog.findById(request.params.id).populate("author", {
     _id: 1,
@@ -71,6 +72,26 @@ blogRouter.get("/:id", async (request, response) => {
   });
   response.json(blog);
 });
+
+// Getting Blog by the user
+blogRouter.get("/user/:userid", userExtractor, async (request, response) => {
+  const user = request.user;
+
+  if (!user) {
+    return response.status(404).json({
+      error: "user not found",
+    });
+  }
+
+  const blogs = await Blog.find({ author : user.id}).populate("author", {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+  });
+  
+  response.status(200).json(blogs);
+})
+
 
 // Creating a new blog
 blogRouter.post("/", userExtractor, async (request, response) => {
