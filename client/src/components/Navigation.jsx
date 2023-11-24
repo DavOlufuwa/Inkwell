@@ -4,44 +4,41 @@ import {
   faSearch,
   faSun,
   faTimes,
+  faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { NavLink, Link, useNavigate} from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
+import axios from "axios";
 
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
   const body = document.querySelector("body");
-  const axiosPrivate = useAxiosPrivate();
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
 
   const logout = async () => {
-    const response = await axiosPrivate.get("/api/logout");
+    const response = await axios.get("/api/logout");
     return response.data;
   };
 
-  const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      setAuth({});
-      navigate('/login', { replace: true });
-      enqueueSnackbar("Logged out successfully", { autoHideDuration: 3000 });
-    },
-    onError: () => {
+  const logOutUser = async () => {
+    try {
+      await logout()
+      enqueueSnackbar("Logged out successfully", { autoHideDuration: 3000 })
+      setAuth({})
+      navigate("/login", { replace: true })
+    } catch (error) {
       enqueueSnackbar("Error logging out");
-    },
-  });
+      console.log(error)
+    }
+  }
 
-  const fullNameArray = auth?.fullName?.split(" ").map((name) => name[0]);
-
-  const initials = fullNameArray?.join("");
 
   const openMenu = () => {
     setMenuOpen(true);
@@ -97,39 +94,59 @@ const Navigation = () => {
           </li>
         </ul>
       </div>
+      {/* Profile Menu */}
       <div className="flex items-center gap-4">
         {auth?.fullName && (
-          <div className="z-50">
-            <div className="uppercase font-bold text-2xl">{initials}</div>
-            <div className="bg-red-500">
-              <ul>
-                <li>
-                  <Link to={`profile/${auth.id}`}>Profile</Link>
+          <div className="z-50 relative">
+            <div>
+              <FontAwesomeIcon
+                icon={faUserCircle}
+                className="cursor-pointer w-[31px] h-8 pt-2 duration-200"
+                style={{
+                  color: darkMode ? "white" : "black",
+                }}
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              />
+            </div>
+            <div
+              className={`${
+                profileMenuOpen ? "block" : "hidden"
+              } bg-bg-light ring-1 ring-t-light absolute w-32 -bottom-[7.5rem] -left-12 p-1`}
+            >
+              <ul className="flex flex-col gap-2  uppercase text-sm font-extrabold">
+                <li
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="duration-200 hover:bg-d-dark hover:text-t-dark py-2 px-1"
+                >
+                  <Link to={`profile/${auth.id}`}>View Profile</Link>
                 </li>
-                <li>
-                  <p
-                    to="login"
-                    role="button"
-                    className="nav-link"
-                    onClick={() => logoutMutation.mutate()}
-                  >
-                    Log Out
-                  </p>
-                </li>
-                <li>
+                <li onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
                   <Link
                     to="newblog"
                     role="button"
-                    className="nav-link"
-                    onClick={closeMenu}
+                    className="nav-link dark:text-t-light text-sm font-extrabold duration-200 hover:bg-d-dark hover:text-t-dark dark:hover:text-t-dark py-2 px-1"
                   >
                     Create a post
                   </Link>
+                </li>
+                <li
+                  onClick={() => {
+                    setProfileMenuOpen(!profileMenuOpen);
+                    logOutUser();
+                  }}
+                >
+                  <p
+                    role="button"
+                    className="nav-link dark:text-t-light text-sm font-extrabold duration-200 hover:bg-d-dark hover:text-t-dark dark:hover:text-t-dark py-2 px-1"
+                  >
+                    Log Out
+                  </p>
                 </li>
               </ul>
             </div>
           </div>
         )}
+        {/* Theme Toggle */}
         <button
           className=" px-[10px] py-1 z-50 rounded-full flex gap-3"
           onClick={toggleTheme}
@@ -150,6 +167,7 @@ const Navigation = () => {
             />
           )}
         </button>
+        {/* Mobile Menu */}
         <div className={`cursor-pointer lg:hidden z-50`}>
           {menuOpen ? (
             <FontAwesomeIcon

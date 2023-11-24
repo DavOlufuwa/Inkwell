@@ -4,12 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import UploadWidget from "../components/UploadWidget";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import TailSpin from "/icons/tail-spin.svg"
 import { enqueueSnackbar } from "notistack";
 
 const FormEdition = ({ editMode }) => {
   const axiosPrivate = useAxiosPrivate();
   const [blogTags, setBlogTags] = useState([]);
   const inputRef = useRef();
+  const textAreaRef = useRef();
+  const [isLoading, setIsLoading] = useState(false);
   const [blogDetails, setBlogDetails] = useState({
     title: "",
     description: "",
@@ -78,6 +81,7 @@ const FormEdition = ({ editMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       await createPost();
       enqueueSnackbar("Blog created successfully");
       setBlogDetails({
@@ -89,9 +93,12 @@ const FormEdition = ({ editMode }) => {
         imageUrl: "",
         imagePublicId: "",
       })
+      textAreaRef.current.value = "";
+      setIsLoading(false);
     }
     catch (error) {
       enqueueSnackbar("Error creating blog", error.message);
+      setIsLoading(false);
     }
   }
 
@@ -161,6 +168,7 @@ const FormEdition = ({ editMode }) => {
               id="description"
               onChange={handleChange}
               defaultValue={blogDetails.description}
+              ref={textAreaRef}
               required
             >
             </textarea>
@@ -173,12 +181,19 @@ const FormEdition = ({ editMode }) => {
               rows="5"
               onChange={handleChange}
               defaultValue={blogDetails.content}
+              ref={textAreaRef}
               required
             >
             </textarea>
           </div>
           <button type="submit" className="btn">
-            Create Post
+            {
+              isLoading ? (
+                <img src={TailSpin} alt="loading" className="w-7 h-7 m-auto"/>
+              ) : (
+                "Create Post"
+              )
+            }
           </button>
         </form>
       </section>

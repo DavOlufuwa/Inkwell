@@ -27,7 +27,7 @@ const App = () => {
       style={{
         color: "#F2F2F2",
         padding: "0.5rem 1.25rem",
-        fontSize: "1.125rem",
+        fontSize: "1.025rem",
         maxWidth: "max-content",
         backgroundColor: "#7D5FC5",
       }}
@@ -35,14 +35,14 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route element={<HomeLayout />}>
+          {/* Protected Routes */}
+          <Route element={<PersistLogin />}>
             <Route index element={<Home />} />
             <Route path="post/:id" element={<BlogDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="search" element={<SearchResults />} />
 
-            {/* Protected Routes */}
-            <Route element={<PersistLogin />}>
               <Route element={<RequireAuth />}>
                 <Route
                   path="newblog"
