@@ -38,15 +38,32 @@ const ProfileBlogCard = ({ postCardProps }) => {
     const response = await axiosPrivate.delete(`/api/blogs/${id}`);
     return response.data;
   }
+  const updateBlog = async () => {
+    const response = await axiosPrivate.put(`/api/blogs/${id}`, {
+      state: "published",
+    });
+    return response.data;
+  };
 
   const deleteMutation = useMutation({
     mutationFn: deleteBlog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allBlogs"] })
-      enqueueSnackbar("Blog deleted successfully")
+      enqueueSnackbar("Post deleted successfully", { variant: "success" })
     },
     onError: () => {
-      enqueueSnackbar("Error deleting blog")
+      enqueueSnackbar("Error deleting post", { variant: "error" })
+    }
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: updateBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allBlogs"] })
+      enqueueSnackbar("Post published successfully" , { variant: "success" })
+    },
+    onError: () => {
+      enqueueSnackbar("Error publishing post", { variant: "error" })
     }
   })
 
@@ -71,7 +88,7 @@ const ProfileBlogCard = ({ postCardProps }) => {
         <div
           className={`${
             optionsOpen ? "" : "hidden"
-          } flex font-bold flex-col gap-3 bg-bg-light absolute z-20 top-6 -right-2 rounded-sm p-1 shadow-xl text-sm`}
+          } flex font-bold flex-col gap-3 bg-bg-light absolute z-20 top-[30px] -right-2 rounded-sm p-1 shadow-xl text-sm`}
         >
           <div
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
@@ -82,7 +99,11 @@ const ProfileBlogCard = ({ postCardProps }) => {
           <div
             role="button"
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
-            onClick={() => setOptionsOpen(!optionsOpen)}
+            onClick={
+              () => {
+                setOptionsOpen(!optionsOpen)
+                updateMutation.mutate()
+              }}
           >
             <p>Publish Post</p>
           </div>

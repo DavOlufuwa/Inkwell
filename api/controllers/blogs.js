@@ -164,7 +164,7 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
     }
   });
 
-  if (blogContent !== bodyContent) {
+  if (bodyContent && (blogContent !== bodyContent)) {
     update.readingTime = Math.ceil(bodyContent / 200);
   }
 
