@@ -1,15 +1,20 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical} from "@fortawesome/free-solid-svg-icons";
 import useTheme from "../hooks/useTheme";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { enqueueSnackbar } from "notistack";
 
 const ProfileBlogCard = ({ postCardProps }) => {
   const { author, title, description, tags, imageUrl, state, id, timeStamp } =
     postCardProps;
+  const axiosPrivate = useAxiosPrivate();
   const { darkMode } = useTheme();
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const queryClient = useQueryClient();
   const dateOptions = {
     year: "numeric",
     month: "short",
@@ -28,6 +33,22 @@ const ProfileBlogCard = ({ postCardProps }) => {
     "en-GB",
     dateOptions
   );
+
+  const deleteBlog = async () => {
+    const response = await axiosPrivate.delete(`/api/blogs/${id}`);
+    return response.data;
+  }
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allBlogs"] })
+      enqueueSnackbar("Blog deleted successfully")
+    },
+    onError: () => {
+      enqueueSnackbar("Error deleting blog")
+    }
+  })
 
   return (
     <div>
@@ -68,7 +89,10 @@ const ProfileBlogCard = ({ postCardProps }) => {
           <div
             role="button"
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
-            onClick={() => setOptionsOpen(!optionsOpen)}
+            onClick={() => {
+              setOptionsOpen(!optionsOpen);
+              deleteMutation.mutate()
+            }}
           >
             <div>Delete Post</div>
           </div>

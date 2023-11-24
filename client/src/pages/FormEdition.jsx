@@ -12,6 +12,7 @@ const FormEdition = ({ editMode }) => {
   const [blogTags, setBlogTags] = useState([]);
   const inputRef = useRef();
   const textAreaRef = useRef();
+  const descRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [blogDetails, setBlogDetails] = useState({
     title: "",
@@ -94,6 +95,7 @@ const FormEdition = ({ editMode }) => {
         imagePublicId: "",
       })
       textAreaRef.current.value = "";
+      descRef.current.value = "";
       setIsLoading(false);
     }
     catch (error) {
@@ -141,9 +143,9 @@ const FormEdition = ({ editMode }) => {
               className="form-control"
             />
           </div>
-          {blogTags.length > 0 && (
+          {blogDetails.tags?.length > 0 && (
             <div className="flex gap-2 flex-wrap">
-              {blogTags.map((tag, index) => (
+              {blogDetails.tags?.map((tag, index) => (
                 <div
                   key={index}
                   role="badge"
@@ -168,7 +170,7 @@ const FormEdition = ({ editMode }) => {
               id="description"
               onChange={handleChange}
               defaultValue={blogDetails.description}
-              ref={textAreaRef}
+              ref={descRef}
               required
             >
             </textarea>
