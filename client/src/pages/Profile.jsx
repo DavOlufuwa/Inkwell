@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import ProfileBlogCard from "../components/ProfileBlogCard";
 
 
 const Profile = () => {
@@ -18,30 +19,34 @@ const Profile = () => {
   const allBlogs = useQuery({
     queryKey: ["allBlogs"],
     queryFn: getAllBlogs,
-    retry: false
+    refetchOnWindowFocus: false,
+    refetchInterval: 100000,
   })
 
-  const blogList = allBlogs.data
+  const blogList = allBlogs?.data
+  
+  const publishedBlogs = useMemo(() => blogList?.filter((blog) => blog.state === "published"), [blogList])
+
+  const draftBlogs = useMemo(() => blogList?.filter((blog) => blog.state === "draft"), [blogList])
 
   return (
-    <div>
+    <div className="md:px-8 lg:px-16">
       <div className="text-t-light dark:text-t-dark text-center text-2xl mt-12 mb-5">
         <h2>Profile</h2>
       </div>
-      <section className="flex justify-start mt-2 mb-6">
-        <div className="text-xl dark:text-t-dark pr-10 pl-3 font-medium border-r-2 border-r-d-dark dark:border-r-d-dark my-auto">
-          <p>
-            {auth.fullName}
-          </p>
-          <p className="text-base">
-            {auth.email}
-          </p>
+      <section className="flex flex-col gap-5 justify-start sm:flex-row mt-2 mb-6">
+        <div className="text-xl dark:text-t-dark sm:pl-3 sm:pr-10 font-medium  sm:border-r-2 border-r-d-dark dark:border-r-d-dark my-auto">
+          <p className="break-all">{auth.fullName}</p>
+          <p className="text-base">{auth.email}</p>
         </div>
-        <div className="my-auto pl-10 dark:text-t-dark pt-1">
+        <div className="my-auto sm:pl-10 dark:text-t-dark pt-1">
+          <Link
+            to="/newblog"
+            className="btn sm:ml-1 text-base rounded-lg px-4 "
+          >
+            create new post
+          </Link>
         </div>
-        <Link to="/newblog" className="btn text-base rounded-lg px-4">
-          create a new post
-        </Link>
       </section>
       <div className="flex justify-start gap-6 border-b border-b-d-dark dark:border-b-d-dark pt-2">
         <div
@@ -59,8 +64,15 @@ const Profile = () => {
           Published
         </div>
       </div>
-      <section>
-        <div></div>
+      <section className="grid mt-10 gap-10 sm:grid-cols-2   lg:grid-cols-3 ">
+        {activeTab === "drafts" &&
+          draftBlogs?.map((blog) => (
+            <ProfileBlogCard key={blog.id} postCardProps={blog} />
+          ))}
+        {activeTab === "published" &&
+          publishedBlogs?.map((blog) => (
+            <ProfileBlogCard key={blog.id} postCardProps={blog} />
+          ))}
       </section>
     </div>
   );
