@@ -8,9 +8,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { enqueueSnackbar } from "notistack";
 
-const ProfileBlogCard = ({ postCardProps }) => {
+const ProfileBlogCard = ({ post }) => {
   const { author, title, description, tags, imageUrl, state, id, timeStamp } =
-    postCardProps;
+    post;
   const axiosPrivate = useAxiosPrivate();
   const { darkMode } = useTheme();
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -88,31 +88,37 @@ const ProfileBlogCard = ({ postCardProps }) => {
         <div
           className={`${
             optionsOpen ? "" : "hidden"
-          } flex font-bold flex-col gap-3 bg-bg-light absolute z-20 top-[30px] -right-2 rounded-sm p-1 shadow-xl text-sm`}
+          } flex font-bold flex-col gap-3 bg-bg-light absolute z-20 top-[30px] -right-2 rounded-sm p-1 shadow-2xl text-sm`}
         >
           <div
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
             onClick={() => setOptionsOpen(!optionsOpen)}
           >
-            <Link to={`/blog/${id}`}>Edit Post</Link>
+            <Link 
+              to={`/editblog/${id}`}
+              state={{postToEdit : post}}
+            >
+              Edit Post
+            </Link>
           </div>
-          <div
-            role="button"
-            className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
-            onClick={
-              () => {
-                setOptionsOpen(!optionsOpen)
-                updateMutation.mutate()
+          {state === "draft" && (
+            <div
+              role="button"
+              className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
+              onClick={() => {
+                setOptionsOpen(!optionsOpen);
+                updateMutation.mutate();
               }}
-          >
-            <p>Publish Post</p>
-          </div>
+            >
+              <p>Publish Post</p>
+            </div>
+          )}
           <div
             role="button"
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
             onClick={() => {
               setOptionsOpen(!optionsOpen);
-              deleteMutation.mutate()
+              deleteMutation.mutate();
             }}
           >
             <div>Delete Post</div>

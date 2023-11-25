@@ -2,9 +2,10 @@
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import UploadWidget from "../components/UploadWidget";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import TailSpin from "/icons/tail-spin.svg"
+import TailSpin from "/icons/tail-spin.svg";
 import { enqueueSnackbar } from "notistack";
 
 const FormEdition = ({ editMode }) => {
@@ -14,6 +15,10 @@ const FormEdition = ({ editMode }) => {
   const textAreaRef = useRef();
   const descRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const postToEdit = location.state?.postToEdit;
+
   const [blogDetails, setBlogDetails] = useState({
     title: "",
     description: "",
@@ -32,17 +37,11 @@ const FormEdition = ({ editMode }) => {
     });
   };
 
-  // useEffect(() => {
-  //   if(editMode) {
-
-  //   }
-  // },[])
-
   const removeTag = (i) => {
     const newTags = [...blogTags];
     newTags.splice(i, 1);
     setBlogTags(newTags);
-    setBlogDetails(prevBlogDetails => ({
+    setBlogDetails((prevBlogDetails) => ({
       ...prevBlogDetails,
       tags: newTags,
     }));
@@ -53,7 +52,7 @@ const FormEdition = ({ editMode }) => {
     if ((e.key === "Enter" || e.keyCode === 13) && value !== "") {
       e.preventDefault();
       setBlogTags([...blogTags, value]);
-      setBlogDetails( prevBlogDetails => ({
+      setBlogDetails((prevBlogDetails) => ({
         ...prevBlogDetails,
         tags: [...prevBlogDetails.tags, value],
       }));
@@ -77,14 +76,28 @@ const FormEdition = ({ editMode }) => {
   const createPost = async () => {
     const response = await axiosPrivate.post("/api/blogs", blogDetails);
     return response.data;
+  };
+
+  const updatePost = async () => {
+    const response = await axiosPrivate.put(`/api/blogs/${postToEdit?.id}`, {
+      ...blogDetails,
+    });
+    return response.data;
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      await createPost();
-      enqueueSnackbar("Blog created successfully");
+  useEffect(() => {
+    if (editMode) {
+      setBlogTags([...postToEdit.tags]);
+      setBlogDetails({
+        ...blogDetails,
+        title: postToEdit.title,
+        description: postToEdit.description,
+        content: postToEdit.content,
+        tags: [...postToEdit.tags],
+        imageUrl: postToEdit.imageUrl,
+        imagePublicId: postToEdit.imagePublicId,
+      });
+    } else {
       setBlogDetails({
         ...blogDetails,
         title: "",
@@ -93,28 +106,68 @@ const FormEdition = ({ editMode }) => {
         tags: [],
         imageUrl: "",
         imagePublicId: "",
-      })
+      });
+      descRef.current.value = "";
+      textAreaRef.current.value = "";
+    }
+  }, [editMode]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      await createPost();
+      enqueueSnackbar("Post created successfully");
+      setBlogDetails({
+        ...blogDetails,
+        title: "",
+        description: "",
+        content: "",
+        tags: [],
+        imageUrl: "",
+        imagePublicId: "",
+      });
       textAreaRef.current.value = "";
       descRef.current.value = "";
       setIsLoading(false);
+    } catch (error) {
+      enqueueSnackbar("Error creating post", error.message);
+      setIsLoading(false);
     }
-    catch (error) {
-      enqueueSnackbar("Error creating blog", error.message);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      await updatePost();
+      setBlogDetails({
+        ...blogDetails,
+        title: "",
+        description: "",
+        content: "",
+        tags: [],
+        imageUrl: "",
+        imagePublicId: "",
+      });
+      enqueueSnackbar("Post updated successfully");
+      setIsLoading(false);
+      navigate("/", { replace: true });
+    } catch (error) {
+      enqueueSnackbar("Error updating post", error.message);
       setIsLoading(false);
     }
   }
 
-
-
   return (
     <div className="min-h-screen">
       <div className="text-t-light dark:text-t-dark text-center text-xl my-12">
-        <h2>Create a new blog post</h2>
+        <h2>{editMode ? "Edit a post" : "Create a new post"}</h2>
       </div>
       <section className="sm:grid sm:place-content-center">
         <form
           className="form-case gap-4 md:min-w-[45rem]"
-          onSubmit={handleSubmit}
+          onSubmit={editMode ? handleUpdate : handleSubmit}
         >
           <div className="form-group">
             <label htmlFor="title">Blog Title</label>
@@ -172,8 +225,7 @@ const FormEdition = ({ editMode }) => {
               defaultValue={blogDetails.description}
               ref={descRef}
               required
-            >
-            </textarea>
+            ></textarea>
           </div>
           <div className="form-group">
             <label htmlFor="content">Content</label>
@@ -185,18 +237,25 @@ const FormEdition = ({ editMode }) => {
               defaultValue={blogDetails.content}
               ref={textAreaRef}
               required
-            >
-            </textarea>
+            ></textarea>
           </div>
-          <button type="submit" className="btn">
-            {
-              isLoading ? (
-                <img src={TailSpin} alt="loading" className="w-7 h-7 m-auto"/>
+          {editMode ? (
+            <button type="submit" className="btn">
+              {isLoading ? (
+                <img src={TailSpin} alt="loading" className="w-7 h-7 m-auto" />
+              ) : (
+                "Update Post"
+              )}
+            </button>
+          ) : (
+            <button type="submit" className="btn">
+              {isLoading ? (
+                <img src={TailSpin} alt="loading" className="w-7 h-7 m-auto" />
               ) : (
                 "Create Post"
-              )
-            }
-          </button>
+              )}
+            </button>
+          )}
         </form>
       </section>
     </div>

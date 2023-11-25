@@ -5,29 +5,34 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import ProfileBlogCard from "../components/ProfileBlogCard";
 
-
 const Profile = () => {
-  const {auth} = useAuth()
+  const { auth } = useAuth();
   const [activeTab, setActiveTab] = useState("drafts");
   const axiosPrivate = useAxiosPrivate();
 
   const getAllBlogs = async () => {
     const response = await axiosPrivate.get(`/api/blogs/user/${auth.id}`);
     return response.data;
-  }
+  };
 
   const allBlogs = useQuery({
     queryKey: ["allBlogs"],
     queryFn: getAllBlogs,
     refetchOnWindowFocus: false,
-    refetchInterval: 100000,
-  })
+    retry: false,
+  });
 
-  const blogList = allBlogs?.data
-  
-  const publishedBlogs = useMemo(() => blogList?.filter((blog) => blog.state === "published"), [blogList])
+  const blogList = allBlogs?.data;
 
-  const draftBlogs = useMemo(() => blogList?.filter((blog) => blog.state === "draft"), [blogList])
+  const publishedPosts = useMemo(
+    () => blogList?.filter((blog) => blog.state === "published"),
+    [blogList]
+  );
+
+  const draftPosts = useMemo(
+    () => blogList?.filter((blog) => blog.state === "draft"),
+    [blogList]
+  );
 
   return (
     <div className="md:px-8 lg:px-16">
@@ -64,16 +69,41 @@ const Profile = () => {
           Published
         </div>
       </div>
-      <section className="grid mt-10 gap-10 sm:grid-cols-2   lg:grid-cols-3 ">
-        {activeTab === "drafts" &&
-          draftBlogs?.map((blog) => (
-            <ProfileBlogCard key={blog.id} postCardProps={blog} />
-          ))}
-        {activeTab === "published" &&
-          publishedBlogs?.map((blog) => (
-            <ProfileBlogCard key={blog.id} postCardProps={blog} />
-          ))}
-      </section>
+      {activeTab === "drafts" && (
+        <div>
+          {draftPosts?.length > 0 ? (
+            <section className="grid mt-10 gap-10 sm:grid-cols-2 lg:grid-cols-3 ">
+              {draftPosts?.map((blog) => (
+                <ProfileBlogCard key={blog.id} postCardProps={blog} />
+              ))}
+            </section>
+          ) : (
+            <div className="min-h-[50vh] grid place-content-center">
+              <p className="text-center font-bold  text-2xl my-auto text-d-light">
+                You currently have no posts in drafts
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === "published" && (
+        <div>
+          {publishedPosts?.length > 0 ? (
+            <section className="grid mt-10 gap-10 sm:grid-cols-2 lg:grid-cols-3 ">
+              {publishedPosts?.map((blog) => (
+                <ProfileBlogCard key={blog.id} post={blog} />
+              ))}
+            </section>
+          ): 
+          <div className="min-h-[50vh] grid place-content-center">
+            <p className="text-center font-bold  text-2xl my-auto text-d-light">
+              You currently have no published posts
+            </p>
+          </div>
+          }
+        </div>
+      )}
     </div>
   );
 };
