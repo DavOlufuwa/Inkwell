@@ -1,10 +1,24 @@
 import Blogcard from "../components/Blogcard";
-const gridBlock = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const Home = () => {
+  const getPublishedBlogs = async () => {
+    const response = await axios.get("/api/blogs");
+    return response.data;
+  };
+
+  const allPublishedBlogs = useQuery({
+    queryKey: ["allPublishedBlogs"],
+    queryFn: getPublishedBlogs,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const allPublishedPosts = allPublishedBlogs?.data?.paginatedResults;
+
   return (
-    <div>
+    <div className="min-h-[100svh]">
       <section className="border border-x-0 border-y-t-light dark:border-y-t-dark my-3 md:mb-10">
         <h1 className="select-none dark:text-t-dark text-7xl sm:text-[8rem] 2xl:text-[15rem] font-bold flex justify-between py-2 md:py-1">
           <span>I</span>
@@ -17,15 +31,23 @@ const Home = () => {
         </h1>
       </section>
       <section className="mb-5">
-        <p className="select-none sm:text-xl font-semibold dark:text-t-dark">
+        <p className="select-none sm:text-base uppercase font-bold dark:text-t-dark">
           Recent Blog Posts
         </p>
       </section>
-      <section className="grid gap-10 sm:grid-cols-2   lg:grid-cols-3 md:px-8 lg:px-16">
-        {gridBlock.map((item, index) => (
-          <Blogcard key={index} />
-        ))}
-      </section>
+      {allPublishedPosts ? (
+        <section className="grid mt-10 gap-10 sm:grid-cols-2 lg:grid-cols-3 ">
+          {allPublishedPosts?.map((blog) => (
+            <Blogcard key={blog.id} post={blog} />
+          ))}
+        </section>
+      ) : (
+        <div className="min-h-[50vh] grid place-content-center">
+          <p className="text-center font-bold  text-2xl my-auto text-d-light">
+            There seems to be an error
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -130,7 +130,7 @@ const ProfileBlogCard = ({ post }) => {
           <div className="h-60 brightness-[75%]">
             <img
               src={imageUrl}
-              alt=""
+              alt="background image"
               className="w-full h-full object-cover rounded-sm"
             />
           </div>

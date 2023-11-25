@@ -28,7 +28,7 @@ blogRouter.get("/", async (request, response) => {
 
   const startIndex = (pageNumber - 1) * pageSize;
 
-  const allBlogs = await Blog.find({ ...searchQuery })
+  const allBlogs = await Blog.find({...searchQuery , state: "published"})
     .populate("author", {
       _id: 1,
       firstName: 1,
