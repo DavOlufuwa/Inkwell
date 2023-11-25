@@ -54,7 +54,7 @@ const Blogcard = ({post}) => {
         </p>
         <Link
           to={`/post/${id}`}
-          state={post}
+          state={{postToRead : post}}
           className="text-d-light dark:text-d-light cursor-pointer after:bg-d-light dark:after:bg-d-light relative font-extrabold  after:duration-200 after:w-0 after:absolute  after:left-0 after:-bottom-1 after:h-[2px] hover:after:w-full"
         >
           View Article

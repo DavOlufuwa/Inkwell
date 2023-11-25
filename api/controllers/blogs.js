@@ -28,7 +28,7 @@ blogRouter.get("/", async (request, response) => {
 
   const startIndex = (pageNumber - 1) * pageSize;
 
-  const allBlogs = await Blog.find({...searchQuery , state: "published"})
+  const allBlogs = await Blog.find({ ...searchQuery, state: "published" })
     .populate("author", {
       _id: 1,
       firstName: 1,
@@ -83,15 +83,14 @@ blogRouter.get("/user/:userid", userExtractor, async (request, response) => {
     });
   }
 
-  const blogs = await Blog.find({ author : user.id}).populate("author", {
+  const blogs = await Blog.find({ author: user.id }).populate("author", {
     _id: 1,
     firstName: 1,
     lastName: 1,
   });
-  
-  response.status(200).json(blogs);
-})
 
+  response.status(200).json(blogs);
+});
 
 // Creating a new blog
 blogRouter.post("/", userExtractor, async (request, response) => {
@@ -129,6 +128,21 @@ blogRouter.post("/", userExtractor, async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
+// Updating the ReadCount of a post
+blogRouter.put("/readcount/:id", async (request, response) => {
+  const blogId = request.params.id;
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    blogId,
+    { $inc: { readCount: 1 }},
+    { new: true }
+  ).populate("author", {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+  })
+  response.status(200).json(updatedBlog);
+});
+
 //Updating a blog post
 blogRouter.put("/:id", userExtractor, async (request, response) => {
   const user = request.user;
@@ -164,7 +178,7 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
     }
   });
 
-  if (bodyContent && (blogContent !== bodyContent)) {
+  if (bodyContent && blogContent !== bodyContent) {
     update.readingTime = Math.ceil(bodyContent / 200);
   }
 

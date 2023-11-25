@@ -44,7 +44,7 @@ const Home = () => {
       ) : (
         <div className="min-h-[50vh] grid place-content-center">
           <p className="text-center font-bold  text-2xl my-auto text-d-light">
-            There seems to be an error
+            Loading Posts ...
           </p>
         </div>
       )}
