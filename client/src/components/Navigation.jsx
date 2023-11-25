@@ -17,6 +17,8 @@ import axios from "axios";
 const Navigation = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
+  const [searchValue, setSearchValue] = useState("");
+
   const body = document.querySelector("body");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const { auth, setAuth } = useAuth();
@@ -29,30 +31,40 @@ const Navigation = () => {
 
   const logOutUser = async () => {
     try {
-      await logout()
-      enqueueSnackbar("Logged out successfully", { autoHideDuration: 3000 })
-      setAuth({})
-      navigate("/login", { replace: true })
+      await logout();
+      enqueueSnackbar("Logged out successfully", { autoHideDuration: 3000 });
+      setAuth({});
+      navigate("/login", { replace: true });
     } catch (error) {
       enqueueSnackbar("Error logging out");
-      console.log(error)
+      console.log(error);
     }
-  }
-
+  };
 
   const openMenu = () => {
     setMenuOpen(true);
     body?.classList.add("overflow-hidden");
   };
 
-  const toggleTheme = () => {
-    toggleDarkMode();
-  };
-
   const closeMenu = () => {
     setMenuOpen(false);
     body?.classList.remove("overflow-hidden");
   };
+  const toggleTheme = () => {
+    toggleDarkMode();
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchValue) {
+      return closeMenu();
+    }
+    navigate(`/search?q=${encodeURIComponent(searchValue)}`);
+    closeMenu();
+    setSearchValue(""); 
+  };
+
+
 
   return (
     <nav className=" flex justify-between items-center w-full mx-auto pt-5">
@@ -65,11 +77,11 @@ const Navigation = () => {
         </Link>
       </div>
       <div
-        className={`bg-bg-light dark:bg-bg-dark duration-300 absolute min-h-screen left-0 top-[-107%] w-full flex items-center px-8 md:px-5 lg:bg-inherit lg:static lg:min-h-max lg:w-auto z-40 ${
+        className={`bg-bg-light dark:bg-bg-dark duration-300 absolute min-h-screen left-0 top-[-107%] w-full flex items-center px-8 md:px-5  lg:bg-inherit  lg:static lg:min-h-max lg:w-auto z-40 ${
           menuOpen && "top-[0%]"
         }`}
       >
-        <ul className="bg-transparent w-full flex flex-col gap-8 md:flex-row md:items-center md:gap-[3vw]">
+        <ul className="bg-transparent w-full flex flex-col gap-8 md:mr-64 lg:mr-0 lg:flex-row lg:items-center md:gap-[3vw]">
           <li>
             <NavLink to="login" className="nav-link" onClick={closeMenu}>
               Log in
@@ -81,16 +93,27 @@ const Navigation = () => {
             </NavLink>
           </li>
           <li className="relative">
-            <input
-              type="text"
-              placeholder="Search Blogs"
-              className="min-w-full dark:bg-bg-light dark:text-t-light border border-d-light focus-visible:border-d-light active:border-d-light outline-none py-3 pl-2 pr-14 rounded-md lg:w-72 "
-            />
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="absolute right-0 bg-d-light dark p-[15px] pt-[14px] text-xl md:p-[14px] md:pb-[15px] rounded-e-md cursor-pointer"
-              style={{ color: "white" }}
-            />
+            <form onSubmit={handleSearch}>
+              <input
+                type="text"
+                name="search"
+                id="search"
+                value={searchValue}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                }}
+                autoComplete="off"
+                placeholder="Search posts"
+                className="min-w-full dark:bg-bg-light dark:text-t-light border border-d-light focus-visible:border-d-light active:border-d-light outline-none py-2 pl-2 pr-14 rounded-md lg:w-72"
+              />
+              <button className="absolute right-0 bg-none w-fit h-fit focus:outline-none">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className=" bg-d-light dark p-[11px] pt-[10px] text-xl md:p-[11px] md:pb-[10px] rounded-e-md cursor-pointer"
+                  style={{ color: "white" }}
+                />
+              </button>
+            </form>
           </li>
         </ul>
       </div>

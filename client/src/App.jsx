@@ -42,7 +42,6 @@ const App = () => {
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="search" element={<SearchResults />} />
-
               <Route element={<RequireAuth />}>
                 <Route
                   path="newblog"
