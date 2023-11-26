@@ -36,6 +36,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(accessTokenExtractor);
+app.use(express.static("dist"));
 app.use('/api/users', userRouter)
 app.use('/api/upload', imageRouter)
 app.use('/api/login', loginRouter)
