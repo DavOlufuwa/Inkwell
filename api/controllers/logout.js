@@ -4,8 +4,7 @@ const { userExtractor, refreshTokenExtractor } = require("../utils/middleware");
 const logoutRouter = require("express").Router();
 
 logoutRouter.get("/", refreshTokenExtractor, async (request, response) => {
-  
-  const user = await User.findOne({email: request.user.email});
+  const user = await User.findOne({ email: request.user.email });
 
   user.refreshToken = "";
 
@@ -15,10 +14,10 @@ logoutRouter.get("/", refreshTokenExtractor, async (request, response) => {
     .clearCookie("jwt", {
       httpOnly: true,
       SameSite: "None",
-      secure: false,
+      secure: true,
     })
     .status(204)
     .send();
-})
+});
 
-module.exports = logoutRouter
+module.exports = logoutRouter;
