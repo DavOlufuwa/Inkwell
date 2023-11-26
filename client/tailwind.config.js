@@ -4,6 +4,10 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      backgroundImage: {
+        "image-light": "url('/public/images/logo-color.svg')",
+        "image-dark": "url('/public/images/logo-white.svg')",
+      },
       colors: {
         "t-light": "#1A1A1A",
         "t-dark": "#F2F2F2",
@@ -13,9 +17,8 @@ export default {
         "d-dark": "#9685BF",
         "bg-dark": "#090D1F",
         "bg-light": "#FAFAFA",
-      }
+      },
     },
   },
   plugins: [],
 };
-

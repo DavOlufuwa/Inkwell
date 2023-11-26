@@ -42,6 +42,6 @@
     @apply px-3 dark:text-t-dark font-bold tracking-wider w-fit relative duration-200 cursor-pointer select-none;
   }
   .tab.active {
-    @apply text-d-light dark:text-d-dark  after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-d-light dark:after:bg-d-dark;
+    @apply text-d-light dark:text-d-dark  after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-d-light dark:after:bg-d-dark;
   }
 }

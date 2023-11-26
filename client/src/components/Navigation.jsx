@@ -12,6 +12,8 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
+import InkwellDark from "/images/logo-white.svg";
+import InkwellLight from "/images/logo-color.svg";
 import axios from "axios";
 
 const Navigation = () => {
@@ -73,7 +75,11 @@ const Navigation = () => {
           to=""
           className="text-t-light dark:text-t-dark flex items-center min-w-max font-black uppercase text-2xl"
         >
-          INKWELL
+          <img
+            alt="Inkwell logo"
+            className="h-8 md:h-10"
+            src={darkMode ? InkwellDark : InkwellLight}
+          />
         </Link>
       </div>
       <div
@@ -126,7 +132,7 @@ const Navigation = () => {
                 icon={faUserCircle}
                 className="cursor-pointer w-[31px] h-8 pt-2 duration-200"
                 style={{
-                  color: darkMode ? "white" : "black",
+                  color: darkMode ? "white" : "#0C056D",
                 }}
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               />
@@ -178,14 +184,14 @@ const Navigation = () => {
             <FontAwesomeIcon
               icon={faSun}
               style={{
-                color: darkMode ? "white" : "black",
+                color: darkMode ? "white" : "#0C056D",
               }}
               className="text-xl border border-t-dark rounded-full p-[6px] hover:bg-d-light"
             />
           ) : (
             <FontAwesomeIcon
               icon={faMoon}
-              style={{ color: darkMode ? "white" : "black" }}
+              style={{ color: darkMode ? "white" : "#0C056D" }}
               className="text-2xl border border-t-light rounded-full px-[6px] py-[3px] hover:bg-d-dark"
             />
           )}
@@ -197,14 +203,14 @@ const Navigation = () => {
               icon={faTimes}
               onClick={closeMenu}
               className="text-4xl"
-              style={{ color: darkMode ? "white" : "black" }}
+              style={{ color: darkMode ? "white" : "#0C056D" }}
             />
           ) : (
             <FontAwesomeIcon
               icon={faBars}
               onClick={openMenu}
               className="text-4xl"
-              style={{ color: darkMode ? "white" : "black" }}
+              style={{ color: darkMode ? "white" : "#0C056D" }}
             />
           )}
         </div>

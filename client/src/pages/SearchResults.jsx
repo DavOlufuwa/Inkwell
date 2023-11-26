@@ -7,7 +7,7 @@ const SearchResults = () => {
   const [activeTab, setActiveTab] = useState("authors");
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("q");
-  const [searchResults, setSearchResults ] = useState({
+  const [searchResults, setSearchResults] = useState({
     titleSearch: [],
     authorSearch: [],
     tagSearch: [],
@@ -18,7 +18,9 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchSearchResults = async () => {
       const titlePromise = axios.get(`/api/blogs/title?search=${searchQuery}`);
-      const authorPromise = axios.get(`/api/blogs/author?search=${searchQuery}`);
+      const authorPromise = axios.get(
+        `/api/blogs/author?search=${searchQuery}`
+      );
       const tagPromise = axios.get(`/api/blogs/tags?search=${searchQuery}`);
 
       const [titleResponse, authorResponse, tagResponse] = await Promise.all([
@@ -40,34 +42,49 @@ const SearchResults = () => {
   return (
     <div>
       <div className="mt-12 mb-5">
-        <h1 className="text-2xl font-bold text-gray-400 dark:text-gray-500">
+        <h1 className="text-2xl font-bold text-gray-400 dark:text-gray-500 break-all">
           Search Results for{" "}
           <span className="text-t-light text-3xl dark:text-white capitalize">
             {searchQuery}
           </span>
         </h1>
       </div>
-      <div className="flex justify-start gap-6 border-b border-b-d-dark dark:border-b-d-dark pt-2">
-        <div
-          role="button"
-          onClick={() => setActiveTab("authors")}
-          className={`tab ${activeTab === "authors" ? "active" : ""}`}
-        >
-          Authors
+      <div className="flex justify-start gap-9 border-b border-b-d-dark dark:border-b-d-dark pt-2">
+        <div className="relative">
+          <div
+            role="button"
+            onClick={() => setActiveTab("authors")}
+            className={`tab ${activeTab === "authors" ? "active" : ""}`}
+          >
+            Authors
+          </div>
+          <span className="absolute top-1 -right-3 text-xs font-medium text-t-dark bg-d-light px-1 rounded-full my-auto ml-1 ">
+            {authorSearch?.length}
+          </span>
         </div>
-        <div
-          role="button"
-          onClick={() => setActiveTab("titles")}
-          className={`tab ${activeTab === "titles" ? "active" : ""}`}
-        >
-          Titles
+        <div className="relative">
+          <div
+            role="button"
+            onClick={() => setActiveTab("titles")}
+            className={`tab ${activeTab === "titles" ? "active" : ""}`}
+          >
+            Titles
+          </div>
+          <span className="absolute top-1 -right-3 text-xs text-t-dark font-medium bg-d-light px-1 rounded-full my-auto ml-1">
+            {titleSearch?.length}
+          </span>
         </div>
-        <div
-          role="button"
-          onClick={() => setActiveTab("tags")}
-          className={`tab ${activeTab === "tags" ? "active" : ""}`}
-        >
-          Tags
+        <div className="relative">
+          <div
+            role="button"
+            onClick={() => setActiveTab("tags")}
+            className={`tab ${activeTab === "tags" ? "active" : ""}`}
+          >
+            Tags
+          </div>
+          <span className="absolute top-1 -right-3 text-xs text-t-dark font-medium bg-d-light px-1 rounded-full my-auto ml-1">
+            {tagSearch?.length}
+          </span>
         </div>
       </div>
       {activeTab === "authors" && (

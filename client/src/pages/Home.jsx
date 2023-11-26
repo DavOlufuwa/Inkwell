@@ -1,15 +1,16 @@
 import Blogcard from "../components/Blogcard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import InkwellDark from "/images/logo-white.svg";
+import InkwellLight from "/images/logo-color.svg";
+import useTheme from "../hooks/useTheme";
 
 const Home = () => {
-
+  const { darkMode } = useTheme()
   const getBlogs = async () => {
     const response = await axios.get("/api/blogs");
     return response.data;
   };
-
-
 
   const allPublishedBlogs = useQuery({
     queryKey: ["allPublishedBlogs"],
@@ -23,15 +24,11 @@ const Home = () => {
   return (
     <div className="min-h-[100svh]">
       <section className="border border-x-0 border-y-t-light dark:border-y-t-dark my-3 md:mb-10">
-        <h1 className="select-none dark:text-t-dark text-7xl sm:text-[8rem] 2xl:text-[15rem] font-bold flex justify-between py-2 md:py-1">
-          <span>I</span>
-          <span>N</span>
-          <span>K</span>
-          <span>W</span>
-          <span>E</span>
-          <span>L</span>
-          <span>L</span>
-        </h1>
+        <img
+          alt="Inkwell logo"
+          className="min-h-[12vh] w-full object-center"
+          src={darkMode ? InkwellDark : InkwellLight}
+        />
       </section>
       <section className="mb-5">
         <p className="select-none sm:text-base uppercase font-bold dark:text-t-dark">
