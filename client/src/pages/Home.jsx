@@ -1,16 +1,19 @@
 import Blogcard from "../components/Blogcard";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Home = () => {
-  const getPublishedBlogs = async () => {
+
+  const getBlogs = async () => {
     const response = await axios.get("/api/blogs");
     return response.data;
   };
 
+
+
   const allPublishedBlogs = useQuery({
     queryKey: ["allPublishedBlogs"],
-    queryFn: getPublishedBlogs,
+    queryFn: getBlogs,
     refetchOnWindowFocus: false,
     retry: false,
   });
