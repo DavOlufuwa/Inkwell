@@ -68,6 +68,10 @@ const FormEdition = ({ editMode }) => {
         return;
       }
       setBlogTags([...blogTags, val]);
+      setBlogDetails((prevBlogDetails) => ({
+        ...prevBlogDetails,
+        tags: [...prevBlogDetails.tags, val],
+      }))
       inputRef.current.value = "";
       inputRef.current.focus();
     }
@@ -115,6 +119,10 @@ const FormEdition = ({ editMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if(blogDetails.tags.length === 0) {
+        enqueueSnackbar("Please add at least one tag");
+        return;
+      }
       setIsLoading(true);
       await createPost();
       enqueueSnackbar("Post created successfully");
@@ -140,6 +148,10 @@ const FormEdition = ({ editMode }) => {
     e.preventDefault();
     try {
       setIsLoading(true);
+      if (blogDetails.tags.length === 0) {
+        enqueueSnackbar("Please add at least one tag");
+        return;
+      }
       await updatePost();
       setBlogDetails({
         ...blogDetails,

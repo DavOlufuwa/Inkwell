@@ -3,11 +3,20 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { signupUser } from "../routes/authRequests";
 import { enqueueSnackbar } from "notistack";
+import TailSpin from "/icons/tail-spin.svg";
 
 const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [signingUp, setSigningUp] = useState(false);
   const from = location.state?.from?.pathname || "/";
+
+  const [credentials, setCredentials] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+  });
 
   const newUserMutation = useMutation({
     mutationFn: signupUser,
@@ -20,29 +29,26 @@ const Signup = () => {
       });
       setCredentials({
         email: "",
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         password: "",
       });
+      setSigningUp(false);
       navigate(from, { replace: true });
     },
     onError: () => {
       enqueueSnackbar("Something went wrong while creating your account" ,);
       setCredentials({
         email: "",
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         password: "",
       });
+      setSigningUp(false);
     },
   });
 
-  const [credentials, setCredentials] = useState({
-    email: "",
-    firstname: "",
-    lastname: "",
-    password: "",
-  });
+
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -50,6 +56,7 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSigningUp(true);
     newUserMutation.mutate(credentials);
   };
 
@@ -117,7 +124,11 @@ const Signup = () => {
               />
             </div>
             <button type="submit" className="btn">
-              Create an account
+              {signingUp ? (
+                <img src={TailSpin} alt="TailSpin" className="w-6 h-7 m-auto" />
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
         </div>
