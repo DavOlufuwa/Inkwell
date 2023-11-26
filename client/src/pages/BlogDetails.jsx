@@ -70,7 +70,7 @@ const BlogDetails = () => {
             <img
               src={imageUrl}
               alt=""
-              className="w-full brightness-[45%] object-cover max-h-[20rem] md:max-h-[30rem] "
+              className="w-full brightness-[50%] object-cover max-h-[20rem] md:max-h-[30rem] "
             />
             <div className="flex gap-4 absolute top-3 left-2 max-w-full flex-wrap">
               {tags?.map((tag, index) => (
