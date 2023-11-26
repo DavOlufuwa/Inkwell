@@ -1,79 +1,144 @@
 const blogRouter = require("express").Router();
 const { default: mongoose } = require("mongoose");
 const Blog = require("../models/blog");
-const { userExtractor } = require("../utils/middleware");
+const {
+  userExtractor,
+  searchByAuthor,
+  generateResults,
+  setPaginationLinks,
+  searchByTags,
+  searchByTitle,
+} = require("../utils/middleware");
 
-// Get all blogs
-blogRouter.get("/", async (request, response) => {
-  const { page, limit, search } = request.query;
+// Getting All Blogs
+blogRouter.get(
+  "/",
+  async (request, response, next) => {
+    const { page, limit } = request.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 20;
+    const startIndex = (pageNumber - 1) * pageSize;
 
-  const pageNumber = parseInt(page);
-  const pageSize = parseInt(limit);
+    const allBlogs = await Blog.find({ state: "published" })
+      .skip(startIndex)
+      .limit(pageSize);
 
-  const searchQuery = search
-    ? {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { content: { $regex: search, $options: "i" } },
-          { tags: { $regex: search, $options: "i" } },
-          {
-            $or: [
-              { "author.firstName": { $regex: new RegExp(search, "i") } },
-              { "author.lastName": { $regex: new RegExp(search, "i") } },
-            ],
-          },
-        ],
-      }
-    : {};
+    const totalCount = await Blog.countDocuments({ state: "published" });
 
-  const startIndex = (pageNumber - 1) * pageSize;
+    request.pageNumber = pageNumber;
+    request.pageSize = pageSize;
+    request.totalCount = totalCount;
+    request.allBlogs = allBlogs;
+    request.startIndex = startIndex;
 
-  const allBlogs = await Blog.find({ ...searchQuery, state: "published" })
-    .populate("author", {
-      _id: 1,
-      firstName: 1,
-      lastName: 1,
-    })
-    .limit(pageSize)
-    .skip(startIndex);
-
-  const totalCount = await Blog.countDocuments({ ...searchQuery });
-
-  const results = {
-    currentPage: pageNumber,
-    totalPages: Math.ceil(totalCount / pageSize),
-    totalBlogs: totalCount,
-    paginatedResults: allBlogs,
-  };
-
-  if (startIndex + pageSize < totalCount) {
-    results.next = {
-      page: pageNumber + 1,
-      limit: pageSize,
-    };
+    next();
+  },
+  generateResults,
+  setPaginationLinks,
+  (request, response) => {
+    response.status(200).json(response.results);
   }
+);
 
-  if (startIndex > 0) {
-    results.previous = {
-      page: pageNumber - 1,
-      limit: pageSize,
-    };
+// Get By Author
+blogRouter.get(
+  "/author",
+  searchByAuthor,
+  async (request, response, next) => {
+
+    const { authorSearchQuery } = request;
+
+    const { page, limit } = request.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 20;
+    const startIndex = (pageNumber - 1) * pageSize;
+    const totalCount = await Blog.countDocuments(authorSearchQuery);
+    const allBlogs = await Blog.find(authorSearchQuery)
+      .skip(startIndex)
+      .limit(pageSize);
+
+    request.pageNumber = pageNumber;
+    request.pageSize = pageSize;
+    request.totalCount = totalCount;
+    request.allBlogs = allBlogs;
+    request.startIndex = startIndex;
+
+    next();
+  },
+  generateResults,
+  setPaginationLinks,
+  (request, response) => {
+    response.status(200).json(response.results);
   }
+);
 
-  response.status(200).json(results);
-});
+// Get By Tags
+blogRouter.get(
+  "/tags",
+  searchByTags,
+  async (request, response, next) => {
+    const { tagsSearchQuery } = request
+    const { page, limit, } = request.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 20;
+    const startIndex = (pageNumber - 1) * pageSize;
+    const totalCount = await Blog.countDocuments(tagsSearchQuery);
+    const allBlogs = await Blog.find(tagsSearchQuery)      
+    .skip(startIndex)
+    .limit(pageSize);
+
+    request.pageNumber = pageNumber;
+    request.pageSize = pageSize;
+    request.totalCount = totalCount;
+    request.allBlogs = allBlogs;
+    request.startIndex = startIndex;
+
+    next();
+  },
+  generateResults,
+  setPaginationLinks,
+  (request, response) => {
+    response.status(200).json(response.results);
+  }
+);
+
+// Get By Title 
+blogRouter.get(
+  "/title",
+  searchByTitle,
+  async (request, response, next) => {
+    const { titleSearchQuery } = request
+    const { page, limit, } = request.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 20;
+    const startIndex = (pageNumber - 1) * pageSize;
+    const totalCount = await Blog.countDocuments(titleSearchQuery);
+    const allBlogs = await Blog.find(titleSearchQuery)      
+    .skip(startIndex)
+    .limit(pageSize);
+
+    request.pageNumber = pageNumber;
+    request.pageSize = pageSize;
+    request.totalCount = totalCount;
+    request.allBlogs = allBlogs;
+    request.startIndex = startIndex;
+
+    next();
+  },
+  generateResults,
+  setPaginationLinks,
+  (request, response) => {
+    response.status(200).json(response.results);
+  }
+)
 
 // Get blog by id
 blogRouter.get("/:id", async (request, response) => {
-  const blog = await Blog.findById(request.params.id).populate("author", {
-    _id: 1,
-    firstName: 1,
-    lastName: 1,
-  });
+  const blog = await Blog.findById(request.params.id)
   response.json(blog);
 });
 
-// Getting Blog by the user
+// Getting All Blogs by the user
 blogRouter.get("/user/:userid", userExtractor, async (request, response) => {
   const user = request.user;
 
@@ -83,11 +148,7 @@ blogRouter.get("/user/:userid", userExtractor, async (request, response) => {
     });
   }
 
-  const blogs = await Blog.find({ author: user.id }).populate("author", {
-    _id: 1,
-    firstName: 1,
-    lastName: 1,
-  });
+  const blogs = await Blog.find({ "author.id": user.id });
 
   response.status(200).json(blogs);
 });
@@ -98,6 +159,7 @@ blogRouter.post("/", userExtractor, async (request, response) => {
   session.startTransaction();
 
   const user = request.user;
+  console.log(user);
   const body = request.body;
 
   const readTime = () => {
@@ -112,7 +174,11 @@ blogRouter.post("/", userExtractor, async (request, response) => {
     imageUrl: body.imageUrl,
     imagePublicId: body.imagePublicId,
     tags: body.tags,
-    author: user.id,
+    author: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
     content: body.content,
     readingTime: readTime(),
   });
@@ -133,13 +199,9 @@ blogRouter.put("/readcount/:id", async (request, response) => {
   const blogId = request.params.id;
   const updatedBlog = await Blog.findByIdAndUpdate(
     blogId,
-    { $inc: { readCount: 1 }},
+    { $inc: { readCount: 1 } },
     { new: true }
-  ).populate("author", {
-    _id: 1,
-    firstName: 1,
-    lastName: 1,
-  })
+  );
   response.status(200).json(updatedBlog);
 });
 

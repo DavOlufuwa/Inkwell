@@ -20,9 +20,21 @@ const blogSchema = new Schema({
     required: true,
   },
   author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+    id: {      
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    firstName : {
+      type: Schema.Types.String,
+      ref: "User",
+      required: true,
+    },
+    lastName : {
+      type: Schema.Types.String,
+      ref: "User",
+      required: true,
+    }
   },
   state: {
     type: String,

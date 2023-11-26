@@ -9,6 +9,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { enqueueSnackbar } from "notistack";
 
 const ProfileBlogCard = ({ post }) => {
+  
   const { author, title, description, tags, imageUrl, state, id, timeStamp } =
     post;
   const axiosPrivate = useAxiosPrivate();

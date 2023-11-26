@@ -23,7 +23,7 @@ const Profile = () => {
   });
 
   const blogList = allBlogs?.data;
-
+  
   const publishedPosts = useMemo(
     () => blogList?.filter((blog) => blog.state === "published"),
     [blogList]
@@ -74,7 +74,7 @@ const Profile = () => {
           {draftPosts?.length > 0 ? (
             <section className="grid mt-10 gap-10 sm:grid-cols-2 lg:grid-cols-3 ">
               {draftPosts?.map((blog) => (
-                <ProfileBlogCard key={blog.id} postCardProps={blog} />
+                <ProfileBlogCard key={blog.id} post={blog} />
               ))}
             </section>
           ) : (

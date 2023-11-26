@@ -80,7 +80,7 @@ const BlogDetails = () => {
           ))}
         </div>
         <div className="absolute z-20 bottom-0 left-2">
-          <h2 className="uppercase tracking-wider font-extrabold text-xl sm:text-4xl lg:text-5xl lg:leading-[4rem] py-2 px-1 text-white dark:text-t-dark mb-3">
+          <h2 className="uppercase tracking-wider font-bold text-xl sm:text-4xl lg:text-5xl lg:leading-[4rem] py-2 px-1 text-white dark:text-t-dark mb-3">
             {title}
           </h2>
         </div>
