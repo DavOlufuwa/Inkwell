@@ -2,16 +2,20 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import axios from "axios";
 import ProfileBlogCard from "../components/ProfileBlogCard";
 
 const Profile = () => {
   const { auth } = useAuth();
   const [activeTab, setActiveTab] = useState("drafts");
-  const axiosPrivate = useAxiosPrivate();
+  // const axiosPrivate = useAxiosPrivate();
 
   const getAllBlogs = async () => {
-    const response = await axiosPrivate.get(`/api/blogs/user/${auth.id}`);
+    const response = await axios.get(`/api/blogs/user/${auth.id}`, {
+      headers: {
+        Authorization: `Bearer ${auth?.accessToken}`,
+      },
+    });
     return response.data;
   };
 

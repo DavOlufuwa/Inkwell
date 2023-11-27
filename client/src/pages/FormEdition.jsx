@@ -4,13 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import UploadWidget from "../components/UploadWidget";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import axios from "axios";
 import TailSpin from "/icons/tail-spin.svg";
+
 import { enqueueSnackbar } from "notistack";
+import useAuth from "../hooks/useAuth";
 
 const FormEdition = ({ editMode }) => {
-  const axiosPrivate = useAxiosPrivate();
   const [blogTags, setBlogTags] = useState([]);
+  const { auth } = useAuth()
   const inputRef = useRef();
   const textAreaRef = useRef();
   const descRef = useRef();
@@ -71,23 +73,31 @@ const FormEdition = ({ editMode }) => {
       setBlogDetails((prevBlogDetails) => ({
         ...prevBlogDetails,
         tags: [...prevBlogDetails.tags, val],
-      }))
+      }));
       inputRef.current.value = "";
       inputRef.current.focus();
     }
   };
 
   const createPost = async () => {
-    const response = await axiosPrivate.post("/api/blogs", blogDetails);
+    const response = await axios.post("/api/blogs", blogDetails, {
+      headers: {
+        "Authorization": `Bearer ${auth?.accessToken}`,
+      }
+    });
     return response.data;
   };
 
   const updatePost = async () => {
-    const response = await axiosPrivate.put(`/api/blogs/${postToEdit?.id}`, {
+    const response = await axios.put(`/api/blogs/${postToEdit?.id}`, {
       ...blogDetails,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${auth?.accessToken}`,
+      }
     });
     return response.data;
-  }
+  };
 
   useEffect(() => {
     if (editMode) {
@@ -119,7 +129,7 @@ const FormEdition = ({ editMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(blogDetails.tags.length === 0) {
+      if (blogDetails.tags.length === 0) {
         enqueueSnackbar("Please add at least one tag");
         return;
       }
@@ -169,7 +179,7 @@ const FormEdition = ({ editMode }) => {
       enqueueSnackbar("Error updating post", error.message);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen">

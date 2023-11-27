@@ -147,8 +147,8 @@ blogRouter.get("/user/:userid", userExtractor, async (request, response) => {
       error: "user not found",
     });
   }
-  const blogs = await Blog.find({ "author.id": user.id });
-  response.status(200).json(blogs);
+  const allBlogs = await Blog.find({ "author.id": user.id });
+  response.status(200).json(allBlogs);
 });
 
 // Creating a new blog

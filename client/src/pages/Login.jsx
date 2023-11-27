@@ -58,10 +58,10 @@ const Login = () => {
       });
       navigate(from, { replace: true });
     },
-    onError: () => {
+    onError: (error) => {
       emailRef.current.value = "";
       pwdRef.current.value = "";
-      enqueueSnackbar("Error logging in, please try again");
+      enqueueSnackbar(`${error.response.data.error}! Please try again.`);
       setLoggingIn(false);
     },
   });

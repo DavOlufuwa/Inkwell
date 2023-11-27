@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import useTheme from "../hooks/useTheme";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import useAuth from "../hooks/useAuth";
 
 const ProfileBlogCard = ({ post }) => {
-  
+  const { auth } = useAuth();
   const { author, title, description, tags, imageUrl, state, id, timeStamp } =
     post;
-  const axiosPrivate = useAxiosPrivate();
   const { darkMode } = useTheme();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -36,37 +36,49 @@ const ProfileBlogCard = ({ post }) => {
   );
 
   const deleteBlog = async () => {
-    const response = await axiosPrivate.delete(`/api/blogs/${id}`);
-    return response.data;
-  }
-  const updateBlog = async () => {
-    const response = await axiosPrivate.put(`/api/blogs/${id}`, {
-      state: "published",
+    const response = await axios.delete(`/api/blogs/${id}`, {
+      headers: {
+        Authorization: `Bearer ${auth?.accessToken}`,
+      },
     });
+    return response.data;
+  };
+  const updateBlog = async () => {
+    const response = await axios.put(
+      `/api/blogs/${id}`,
+      {
+        state: "published",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      }
+    );
     return response.data;
   };
 
   const deleteMutation = useMutation({
     mutationFn: deleteBlog,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allBlogs"] })
-      enqueueSnackbar("Post deleted successfully", { variant: "success" })
+      queryClient.invalidateQueries({ queryKey: ["allBlogs"] });
+      enqueueSnackbar("Post deleted successfully", { variant: "success" });
     },
     onError: () => {
-      enqueueSnackbar("Error deleting post", { variant: "error" })
-    }
-  })
+      enqueueSnackbar("Error deleting post", { variant: "error" });
+    },
+  });
 
   const updateMutation = useMutation({
     mutationFn: updateBlog,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allBlogs"] })
-      enqueueSnackbar("Post published successfully" , { variant: "success" })
+      queryClient.invalidateQueries({ queryKey: ["allBlogs"] });
+      enqueueSnackbar("Post published successfully", { variant: "success" });
     },
     onError: () => {
-      enqueueSnackbar("Error publishing post", { variant: "error" })
-    }
-  })
+      enqueueSnackbar("Error publishing post", { variant: "error" });
+    },
+  });
 
   return (
     <div>
@@ -95,10 +107,7 @@ const ProfileBlogCard = ({ post }) => {
             className="hover:text-purple-900 hover:bg-purple-200 py-1 px-1"
             onClick={() => setOptionsOpen(!optionsOpen)}
           >
-            <Link 
-              to={`/editblog/${id}`}
-              state={{postToEdit : post}}
-            >
+            <Link to={`/editblog/${id}`} state={{ postToEdit: post }}>
               Edit Post
             </Link>
           </div>

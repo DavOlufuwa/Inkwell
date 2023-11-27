@@ -3,9 +3,10 @@ const BASE_URL = "http://localhost:2500";
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json"},
+  headers: { 
+    "Content-Type": "application/json",
+  },
   withCredentials: true,
-  
 });
 
 export default axios.create({ 
