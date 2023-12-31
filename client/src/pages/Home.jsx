@@ -8,7 +8,9 @@ import useTheme from "../hooks/useTheme";
 const Home = () => {
   const { darkMode } = useTheme()
   const getBlogs = async () => {
-    const response = await axios.get("/api/blogs");
+    const response = await axios.get(
+      "https://inkwell-u8co.onrender.com/api/blogs"
+    );
     return response.data;
   };
 
