@@ -80,22 +80,30 @@ const FormEdition = ({ editMode }) => {
   };
 
   const createPost = async () => {
-    const response = await axios.post("/api/blogs", blogDetails, {
-      headers: {
-        "Authorization": `Bearer ${auth?.accessToken}`,
+    const response = await axios.post(
+      "https://inkwell-u8co.onrender.com/api/blogs",
+      blogDetails,
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
       }
-    });
+    );
     return response.data;
   };
 
   const updatePost = async () => {
-    const response = await axios.put(`/api/blogs/${postToEdit?.id}`, {
-      ...blogDetails,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${auth?.accessToken}`,
+    const response = await axios.put(
+      `https://inkwell-u8co.onrender.com/api/blogs/${postToEdit?.id}`,
+      {
+        ...blogDetails,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
       }
-    });
+    );
     return response.data;
   };
 

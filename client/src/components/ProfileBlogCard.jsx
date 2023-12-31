@@ -45,7 +45,7 @@ const ProfileBlogCard = ({ post }) => {
   };
   const updateBlog = async () => {
     const response = await axios.put(
-      `/api/blogs/${id}`,
+      `https://inkwell-u8co.onrender.com/api/blogs/${id}`,
       {
         state: "published",
       },

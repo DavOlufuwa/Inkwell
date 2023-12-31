@@ -27,7 +27,9 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    const response = await axios.get("/api/logout");
+    const response = await axios.get(
+      "https://inkwell-u8co.onrender.com/api/logout"
+    );
     return response.data;
   };
 
