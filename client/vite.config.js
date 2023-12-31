@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:2500",
+        target: "https://inkwell-u8co.onrender.com",
         changeOrigin: true,
       },
     },
