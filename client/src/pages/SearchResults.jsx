@@ -17,11 +17,15 @@ const SearchResults = () => {
 
   useEffect(() => {
     const fetchSearchResults = async () => {
-      const titlePromise = axios.get(`/api/blogs/title?search=${searchQuery}`);
-      const authorPromise = axios.get(
-        `/api/blogs/author?search=${searchQuery}`
+      const titlePromise = axios.get(
+        `https://inkwell-u8co.onrender.com/api/blogs/title?search=${searchQuery}`
       );
-      const tagPromise = axios.get(`/api/blogs/tags?search=${searchQuery}`);
+      const authorPromise = axios.get(
+        `https://inkwell-u8co.onrender.com/api/blogs/author?search=${searchQuery}`
+      );
+      const tagPromise = axios.get(
+        `https://inkwell-u8co.onrender.com/api/blogs/tags?search=${searchQuery}`
+      );
 
       const [titleResponse, authorResponse, tagResponse] = await Promise.all([
         titlePromise,

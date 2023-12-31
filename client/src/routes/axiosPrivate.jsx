@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:2500";
+const BASE_URL = "https://inkwell-u8co.onrender.com";
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const loginUrl = "/api/login";
-const signupUrl = "/api/users";
+const loginUrl = "https://inkwell-u8co.onrender.com/api/login";
+const signupUrl = "https://inkwell-u8co.onrender.com/api/users";
 
-const refreshUrl = "/api/refresh";
+const refreshUrl = "https://inkwell-u8co.onrender.com/api/refresh";
 
 const config = {
   headers: {

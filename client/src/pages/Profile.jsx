@@ -11,11 +11,14 @@ const Profile = () => {
   // const axiosPrivate = useAxiosPrivate();
 
   const getAllBlogs = async () => {
-    const response = await axios.get(`/api/blogs/user/${auth.id}`, {
-      headers: {
-        Authorization: `Bearer ${auth?.accessToken}`,
-      },
-    });
+    const response = await axios.get(
+      `https://inkwell-u8co.onrender.com/api/blogs/user/${auth.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+        },
+      }
+    );
     return response.data;
   };
 
