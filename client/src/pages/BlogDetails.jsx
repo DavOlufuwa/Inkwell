@@ -42,7 +42,9 @@ const BlogDetails = () => {
  
   useEffect(() => {
     const fetchPostDetails = async () => {
-      const response = await axios.put(`/api/blogs/readcount/${id}`);
+      const response = await axios.put(
+        `https://inkwell-u8co.onrender.com/api/blogs/readcount/${id}`
+      );
       setPostDetails({
         ...postDetails,
         ...response.data,
